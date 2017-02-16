@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package sajari.engine;
+
+// Status response
+message Status {
+  // Status code related to the message.
+  int32 code = 1;
+
+  // Message
+  string message = 2;
+}

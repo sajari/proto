@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package sajari.engine.store.term;
+
+// Term defines methods for accesing terms.
+service Term {
+  // Get the term with specified values.  Ignores any values which don't
+  // have an associated term.
+  rpc Get (Values) returns (Infos);
+}
+
+// Values contains a list of term values to lookup.
+message Values {
+  // Value representation of a term.
+  repeated string values = 1;
+}
+
+// Information for a list of terms.
+message Infos {
+  // Term information
+  message Info {
+    // Internal identifier for term.
+    uint32 id = 1;
+
+    // String representation.
+    string value = 2;
+
+    // Number of documents that contain the term.
+    uint32 num_docs = 3; // uint8
+
+    // Number of words in the term.
+    uint32 num_words = 4; // uint8
+
+    // Hardcoded score attributed to the term.
+    uint32 hardcoded = 5; // uint8
+
+    // Infogain score attributed to the term.
+    uint32 infogain = 6; // uint8
+
+    // Positive interactions (count).
+    uint32 pos = 7; // uint16
+
+    // Negative interactions (count).
+    uint32 neg = 8;  // uint16
+  }
+
+  // Information for a list of terms.
+  repeated Info infos = 1;
+}
+

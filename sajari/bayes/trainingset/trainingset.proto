@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package sajari.bayes.trainingset;
+
+// TrainingSet defines methods used to interact with the bayes training set service
+service TrainingSet {
+  // Uploads a training/testing document for the specified training set name and known class name
+  rpc Upload (UploadRequest) returns (UploadResponse);
+
+  // Creates a new training set
+  rpc Create (CreateRequest) returns (Empty);
+
+  // Returns information on the specified training est
+  rpc Info (InfoRequest) returns (InfoResponse);
+
+  // Adds a new class to the training set
+  rpc AddClass (AddClassRequest) returns (Empty);
+}
+
+// UploadRequest encapsulates training data representing a document to add to the
+// specified training set and class name
+message UploadRequest {
+  // Name of the training set
+  string name = 1;
+
+  // Class name to add the data to
+  string class = 2;
+
+  // Data represents the individual strings representing the input query to be
+  // classified. Normally these would represent words from text. It is the
+  // callers responsibility to stem and tokenise into an array of strings.
+  repeated string data = 3;
+}
+
+// UploadResponse contains a unique hash for the uploaded data to prevent
+// duplicate documents distorting the training set probabilities
+message UploadResponse {
+  // unique hash for the uploaded data
+  string hash = 1;
+}
+
+// CreateRequest creates a new training set
+message CreateRequest {
+  // Name of the training set to create
+  string name = 1;
+}
+
+// InfoRequest gets information for a training set
+message InfoRequest {
+  // Name of the training set to get information
+  string name = 1;
+}
+
+// InfoResponse returns information for a given training set
+message InfoResponse {
+  // List of classes for the specified training set
+  repeated string classes = 1;
+}
+
+// AddClassRequest creates a new class for the specified training set
+message AddClassRequest {
+  // The name of the training set to add the class to
+  string name = 1;
+
+  // Name of the class to add
+  string class = 2;
+}
+
+message Empty {}

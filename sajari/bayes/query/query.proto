@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package sajari.bayes.query;
+
+// Query defines methods used to interact with the bayes query service.
+service Query {
+  // Query takes a model name and an array of strings and returns a naive bayes
+  // based classification for the request data using the model specified.
+  rpc Query (Request) returns (Response);
+}
+
+// Request contains a model name and an array of string based data representing
+// the content to be classified by the naive bayes model
+message Request {
+  // Model is the name of the model to be queried
+  string model = 1;
+
+  // Data is a list of strings representing the input query to be
+  // classified. Normally these would represent words from text. It is the
+  // callers responsibility to stem and tokenise into an array of strings.
+  repeated string data = 2;
+}
+
+// Response returns information on the classification.
+message Response {
+  // Scores map represents each of the potential classes and their
+  // associated probability (Note: only if the probability calculation does
+  // not underflow)
+  map<string, double> scores = 1;
+
+  // Best represents the highest probability class for the input data.
+  string best = 2;
+
+  // Unique indicates if this classification was the solo highest probability
+  // (i.e. not equal with other classes)
+  bool unique = 3;
+}

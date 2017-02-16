@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package sajari.autocomplete;
+
+import "sajari/engine/empty.proto";
+
+// Query defines methods for quering an autocomplete model.
+service Query {
+  // Autocomplete a phrase. Potentially also fix spelling mistakes.
+  rpc AutoComplete (AutoCompleteRequest) returns (AutoCompleteResponse);
+}
+
+// Train defines methods for training autocomplete models.
+service Train {
+  // Train the corpus (used for spell correction).
+  rpc TrainCorpus (TrainCorpusRequest) returns (engine.Empty);
+
+  // Train queries (used to assist with query popularity prediction).
+  rpc TrainQuery (TrainQueryRequest) returns (engine.Empty);
+}
+
+// Model is an autocomplete model.
+message Model {
+  // Name of the model.
+  string name = 1;
+}
+
+// TrainCorpusRequest is used to train the corpus to assist in detecting
+// spelling mistakes.
+message TrainCorpusRequest {
+  // Model to train.
+  Model model = 1;
+
+  // The terms to train the corpus with. These should be correctly
+  // spelt to avoid autocorrecting to misspellings.
+  repeated string terms = 2;
+}
+
+// TrainQueryRequest is a query used to train the autocomplete
+// model what is popular from a user perspective.
+message TrainQueryRequest {
+  // Model to train.
+  Model model = 1;
+
+  // The full query phrase.
+  string phrase = 2;
+
+  // The query phrase broken into terms. Typically this would use spaces
+  // as delimiters, but it is not restricted to spaces for language flexibility.
+  repeated string terms = 3;
+}
+
+// AutoCompleteRequest is a query to be autocompleted.
+message AutoCompleteRequest {
+  // Model to train.
+  Model model = 1;
+
+  // The phrase to be autocompleted.
+  string phrase = 2;
+
+  // The query phrase broken into terms. Typically this would use spaces
+  // as delimiters, but it is not restricted to spaces for language flexibility.
+  repeated string terms = 3;
+}
+
+// AutoCompleteResponse is an ordered list of autocompleted phrases in response
+// to an AutoCompleteRequest.
+message AutoCompleteResponse {
+  // Potential autocompletes in order of most likely to least likely.
+  repeated string phrases = 1;
+}

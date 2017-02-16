@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package sajari.api.engine;
+
+import "sajari/engine/empty.proto";
+
+// Engine defines internal methods for admin control of an engine, including
+// creating/loading/unloading/listing (loaded) collections.
+service Engine {
+  // Create a collection.
+  rpc CreateCollection (Collection) returns (sajari.engine.Empty);
+
+  // Deletes all resources associated with this collection. Collections must first
+  // be unloaded before they can be deleted.
+  rpc DeleteCollection (Collection) returns (sajari.engine.Empty);
+}
+
+// Collection as defined when creating/loading/deleting/listing.
+message Collection {
+  // Name of the collection.
+  string name = 1;
+}

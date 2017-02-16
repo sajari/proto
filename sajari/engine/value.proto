@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package sajari.engine;
+
+// Value is a repesentation data of columnular data for a document.
+message Value {
+  // Repeated values
+  message Repeated {
+    repeated string values = 1;
+  }
+
+  oneof value {
+    // Null value
+    bool null = 1;
+    // Single value
+    string single = 2;
+    // Repeated values.
+    Repeated repeated = 3;
+  }
+}

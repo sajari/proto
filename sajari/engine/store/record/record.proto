@@ -1,0 +1,170 @@
+syntax = "proto3";
+
+package sajari.engine.store.record;
+
+import "sajari/engine/value.proto";
+import "sajari/engine/status.proto";
+import "sajari/engine/key.proto";
+
+// Store is a service which defines methods for adding, getting, patching
+// and deleting records from a collection.
+service Store {
+  // Add creates new records in the collection returning a key for each
+  // stored record.  The key can then be used in subsequent requests to
+  // get/delete/patch.
+  rpc Add (Records) returns (AddResponse);
+
+  // Get retrieves the records corresponding to the listed keys.
+  rpc Get (Keys) returns (GetResponse);
+
+  // Delete removes the records corresponding to the listed keys.
+  rpc Delete (Keys) returns (DeleteResponse);
+
+  // Patch applies key-value updates to records corresponding to
+  // keys.
+  rpc Patch (KeysValues) returns (PatchResponse);
+
+  // Exists
+  rpc Exists (Keys) returns (ExistsResponse);
+}
+
+message ExistsResponse {
+  repeated Status status = 1;
+}
+
+// Score is a service which defines methods for setting and incrementing
+// term instance scores.
+service Score {
+  // SetScores sets record-term instance pos/neg scores in the Store.
+  rpc Set (SetRequest) returns (SetResponse);
+
+  // IncrScores incrementally updates record-term instance pos/neg scores in the Store.
+  rpc Increment (IncrementRequest) returns (IncrementResponse);
+}
+
+// Transform is a representation of a transform process which is applied to a record
+// before it is added.
+message Transform {
+  // Identifier unique identifies a transform
+  string identifier = 1;
+}
+
+// Record is a single record made up of key-value pairs.
+message Record {
+  // A map of key-value pairs.
+  map<string, sajari.engine.Value> values = 1;
+}
+
+// Records is a message which represents a list of records.
+message Records {
+  // The list of records.
+  repeated Record records = 1;
+
+  // Transforms is a list of transformations to be applied to the records
+  // before they are added.
+  repeated Transform transforms = 2;
+}
+
+// AddResponse is returned from Add.
+message AddResponse {
+  // Keys for the inserted records.
+  repeated Key keys = 1;
+
+  // Status for each insert.
+  repeated Status status = 2;
+}
+
+// GetResponse is returned from Get.
+message GetResponse {
+  repeated Record records = 1;
+
+  // Status for each get.
+  repeated Status status = 2;
+}
+
+// DeleteResponse is returned from Delete.
+message DeleteResponse {
+  repeated Status status = 1;
+}
+
+message PatchResponse {
+  repeated Status status = 1;
+}
+
+// Keys is a list of keys.
+message Keys {
+  repeated Key keys = 1;
+}
+
+message KeysValues {
+  message KeyValues {
+    // The key used to identify the record to be patched.
+    Key key = 1;
+
+    // Value is a patching value, which can exhibit a number of different
+    // behaviours.
+    message Value {
+      oneof value {
+        // Set overrides the current value with the value in set.
+        sajari.engine.Value set = 1;
+
+        // Increment takes the current value and incremenets it using the
+        // numerical representation of incremenet.  Can only be used on numeric
+        // fields.
+        //
+        // Not yet implemented.
+        sajari.engine.Value increment = 2;
+
+        // Append takes the current value and appends a new element to the
+        // end.  Can only be used on array fields.
+        //
+        // Not yet implemented.
+        sajari.engine.Value append = 3;
+      }
+    }
+
+    // Map of key-value pairs to patch data in the collection record.  The
+    // value should be a JSON-encoded representation of an engine-recognised
+    // type.  Null is used to clear a value in the collection.
+    map<string, Value> values = 2;
+  }
+
+  repeated KeyValues keys_values = 1;
+}
+
+message SetRequest {
+  repeated KeyScores keys_scores = 1;
+}
+
+message SetResponse {
+  repeated Status status = 1;
+}
+
+message IncrementRequest {
+  repeated KeyScores keys_scores = 1;
+}
+
+// Increment response is
+message IncrementResponse {
+  repeated Status status = 1;
+}
+
+message KeyScores {
+  // Record identifier key.
+  Key key = 1;
+
+  // Score values for an array of terms.
+  message Score {
+    // Terms to score.
+    repeated string terms = 1;
+
+    // Count of interactions (uint16).
+    int32 count = 2;
+
+    // Score for interactions.
+    float score = 3;
+  }
+
+  // Scores to update.
+  repeated Score scores = 2;
+}

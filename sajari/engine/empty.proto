@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package sajari.engine;
+
+// Empty is a message used when there is no value returned
+// from a call.
+message Empty{}

@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package sajari.engine.schema;
+
+import "sajari/engine/empty.proto";
+import "sajari/engine/status.proto";
+
+// Service Schema defines methods for managing collection schemas.
+service Schema {
+  // GetFields returns the fields in the schema.
+  rpc GetFields (Empty) returns (Fields);
+
+  // AddFields adds new fields to the schema.
+  rpc AddFields (Fields) returns (Response);
+
+  // MutateField mutates a field in the schema.
+  rpc MutateField (MutateFieldRequest) returns (Response);
+}
+
+// Fields is a list of Fields.
+message Fields {
+  repeated Field fields = 1;
+}
+
+// Field defines the properties of of a field in the schema.
+message Field {
+  // Type represents the underlying data type of the field. Default is a string.
+  enum Type {
+    STRING = 0;
+    INTEGER = 1;
+    FLOAT = 2;
+    BOOLEAN = 3;
+    TIMESTAMP = 4;
+  }
+
+  // ID used internally
+  uint32 id = 1; // uint16
+
+  // Name of the field.
+  string name = 2;
+
+  // Description of the field.
+  string description = 3;
+
+  // Type of the field.
+  Type type = 4;
+
+  // Repeated sets that fields are repeated values (i.e. a list of values).
+  bool repeated = 5;
+
+  // Required sets that the field must be specified when adding new documents.
+  bool required = 6;
+
+  // Store is set to false if original values should not be stored. Ideal for large text
+  // fields that need to be indexed but will never be returned in results.
+  bool store = 7;
+
+  // Indexed is set to true if this field should be indexed into a reverse index.
+  // Only string and string array fields can be indexed.
+  bool indexed = 8;
+
+  // Unique is set to true if this field should contain unique values. Unique
+  // fields also support indexing to assist with fast document lookups
+  bool unique = 9;
+}
+
+// Response is the message type returned from AddFields and MutateField calls.
+message Response {
+  repeated Status status = 1;
+}
+
+// MutateFieldRequest is a message type passed to the MutateField method.
+message MutateFieldRequest {
+  // Name of the field to mutate.
+  string name = 1;
+
+  // Mutation is a mutation of a schema field.
+  message Mutation {
+    oneof mutation {
+      // Name is a new name for the field.
+      string name = 1;
+
+      // Description is the new description for the field.
+      string description = 2;
+
+      // Type changes the underlying type of the field.
+      Field.Type type = 3;
+
+      // Repeated sets whether the field values are repeated.
+      bool repeated = 4;
+
+      // Required sets whether the field value is required for index documents.
+      bool required = 5;
+
+      // Unique sets whether the field must contain unique values.
+      bool unique = 6;
+
+      // Indexed sets whether the field data is indexed.
+      bool indexed = 7;
+    }
+  }
+
+  // List of mutations to apply to the field.  Each is taken individually, if there
+  // are any errors then the rest are ignored.
+  repeated Mutation mutations = 2;
+}

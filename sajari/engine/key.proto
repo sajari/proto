@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package sajari.engine;
+
+import "sajari/engine/value.proto";
+
+// Key is a key-value pair that uniquely determines a document in a collection.
+// Any unique field in a collection can be used to create a key.
+message Key {
+  // Field is the meta field (must be a unique field).
+  string field = 1;
+
+  // Value is the identifying value.
+  sajari.engine.Value value = 2;
+}

@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package sajari.bayes.train;
+
+// Train defines methods used to interact with the bayes training service
+service Train {
+  // Train takes a set of training and testing documents representing
+  // a set of classes and creates a naive bayes model to represent the
+  // training set. The response returns the accuracy of the model using
+  // the set of testing documents. See TrainingSet for details on how
+  // to create a training set.
+  rpc Train (Request) returns (Response);
+}
+
+// Request contains the name of the training set to use to train the model
+// and a model name to create from the set. This allows the same training
+// set to be continually modified without overwriting previously created
+// models
+message Request {
+  // name of the training set to use for training
+  string name = 1;
+
+  // model to save once the training is complete
+  string model = 2;
+}
+
+// ClassError returns the number of successful and unsuccessful classifications
+// for each class in the model. This is useful for determining common error
+// classes, which indicates overlapping probability of neighbouring classes
+message ClassError {
+  // Expected is the known class we are expecting to see
+  string expected = 1;
+
+  // Got is the class we actually predicted
+  string got = 2;
+
+  // Count is the number of expected-got pairs observed
+  uint32 count = 3;
+}
+
+// Response contains information on a training run with regards to accuracy
+message Response {
+  // Errors contains an array of ClassError describing the training success/failure
+  repeated ClassError errors = 1;
+
+  // Total number of correct classifications across all classes for this
+  // training run
+  uint32 correct = 2;
+
+  // Total number of incorrect classifications across all classes for this
+  // training run
+  uint32 incorrect = 3;
+}
