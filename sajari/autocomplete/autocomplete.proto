@@ -22,10 +22,10 @@ service Query {
 // Train defines methods for training autocomplete models.
 service Train {
   // Train the corpus (used for spell correction).
-  rpc TrainCorpus (TrainCorpusRequest) returns (engine.Empty);
+  rpc TrainCorpus (TrainCorpusRequest) returns (sajari.engine.Empty);
 
   // Train queries (used to assist with query popularity prediction).
-  rpc TrainQuery (TrainQueryRequest) returns (engine.Empty);
+  rpc TrainQuery (TrainQueryRequest) returns (sajari.engine.Empty);
 }
 
 // Model is an autocomplete model.
