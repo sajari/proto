@@ -4,6 +4,15 @@ package sajari.autocomplete;
 
 import "sajari/engine/empty.proto";
 
+// Control defines methods for creating and deleting autocomplete models.
+service Admin {
+  // Create a new autocomplete model.
+  rpc Create (Model) returns (sajari.engine.Empty);
+
+  // Delete an existing model
+  rpc Delete (Model) returns (sajari.engine.Empty);
+}
+
 // Query defines methods for quering an autocomplete model.
 service Query {
   // Autocomplete a phrase. Potentially also fix spelling mistakes.
