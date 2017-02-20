@@ -20,9 +20,9 @@ service Store {
   // Delete removes the records corresponding to the listed keys.
   rpc Delete (Keys) returns (DeleteResponse);
 
-  // Patch applies key-value updates to records corresponding to
+  // Mutate applies key-value updates to records corresponding to
   // keys.
-  rpc Patch (KeysValues) returns (PatchResponse);
+  rpc Mutate (MutateRequest) returns (MutateResponse);
 
   // Exists
   rpc Exists (Keys) returns (ExistsResponse);
@@ -87,49 +87,50 @@ message DeleteResponse {
   repeated sajari.rpc.Status status = 1;
 }
 
-message PatchResponse {
-  repeated sajari.rpc.Status status = 1;
-}
-
 // Keys is a list of keys.
 message Keys {
   repeated Key keys = 1;
 }
 
-message KeysValues {
-  message KeyValues {
-    // The key used to identify the record to be patched.
+message MutateRequest {
+  message RecordMutation {
+    // Key which uniquely identifies record.
     Key key = 1;
 
-    // Value is a patching value, which can exhibit a number of different
-    // behaviours.
-    message Value {
-      oneof value {
+    // MutateField defines a mutation of a field.
+    message FieldMutation {
+      // Field is the name of the field to mutate.
+      string field = 1;
+
+      oneof mutation {
         // Set overrides the current value with the value in set.
-        sajari.engine.Value set = 1;
+        sajari.engine.Value set = 2;
 
         // Increment takes the current value and incremenets it using the
         // numerical representation of incremenet.  Can only be used on numeric
         // fields.
         //
         // Not yet implemented.
-        sajari.engine.Value increment = 2;
+        sajari.engine.Value increment = 3;
 
         // Append takes the current value and appends a new element to the
         // end.  Can only be used on array fields.
         //
         // Not yet implemented.
-        sajari.engine.Value append = 3;
+        sajari.engine.Value append = 4;
       }
     }
 
-    // Map of key-value pairs to patch data in the collection record.  The
-    // value should be a JSON-encoded representation of an engine-recognised
-    // type.  Null is used to clear a value in the collection.
-    map<string, Value> values = 2;
+    // List of fields to mutate.
+    repeated FieldMutation field_mutations = 2;
   }
 
-  repeated KeyValues keys_values = 1;
+  // List of record murations to apply.
+  repeated RecordMutation record_mutations = 1;
+}
+
+message MutateResponse {
+  repeated sajari.rpc.Status status = 1;
 }
 
 message SetRequest {
