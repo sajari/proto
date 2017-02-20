@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package sajari.engine.schema;
 
-import "sajari/engine/empty.proto";
-import "sajari/engine/status.proto";
+import "sajari/rpc/empty.proto";
+import "sajari/rpc/status.proto";
 
 // Service Schema defines methods for managing collection schemas.
 service Schema {
   // GetFields returns the fields in the schema.
-  rpc GetFields (Empty) returns (Fields);
+  rpc GetFields (sajari.rpc.Empty) returns (Fields);
 
   // AddFields adds new fields to the schema.
   rpc AddFields (Fields) returns (Response);
@@ -66,7 +66,7 @@ message Field {
 
 // Response is the message type returned from AddFields and MutateField calls.
 message Response {
-  repeated Status status = 1;
+  repeated sajari.rpc.Status status = 1;
 }
 
 // MutateFieldRequest is a message type passed to the MutateField method.

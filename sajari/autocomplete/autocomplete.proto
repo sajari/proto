@@ -2,15 +2,15 @@ syntax = "proto3";
 
 package sajari.autocomplete;
 
-import "sajari/engine/empty.proto";
+import "sajari/rpc/empty.proto";
 
 // Control defines methods for creating and deleting autocomplete models.
 service Admin {
   // Create a new autocomplete model.
-  rpc Create (Model) returns (sajari.engine.Empty);
+  rpc Create (Model) returns (sajari.rpc.Empty);
 
   // Delete an existing model
-  rpc Delete (Model) returns (sajari.engine.Empty);
+  rpc Delete (Model) returns (sajari.rpc.Empty);
 }
 
 // Query defines methods for quering an autocomplete model.
@@ -22,10 +22,10 @@ service Query {
 // Train defines methods for training autocomplete models.
 service Train {
   // Train the corpus (used for spell correction).
-  rpc TrainCorpus (TrainCorpusRequest) returns (sajari.engine.Empty);
+  rpc TrainCorpus (TrainCorpusRequest) returns (sajari.rpc.Empty);
 
   // Train queries (used to assist with query popularity prediction).
-  rpc TrainQuery (TrainQueryRequest) returns (sajari.engine.Empty);
+  rpc TrainQuery (TrainQueryRequest) returns (sajari.rpc.Empty);
 }
 
 // Model is an autocomplete model.

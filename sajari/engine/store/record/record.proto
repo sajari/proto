@@ -3,8 +3,8 @@ syntax = "proto3";
 package sajari.engine.store.record;
 
 import "sajari/engine/value.proto";
-import "sajari/engine/status.proto";
 import "sajari/engine/key.proto";
+import "sajari/rpc/status.proto";
 
 // Store is a service which defines methods for adding, getting, patching
 // and deleting records from a collection.
@@ -29,7 +29,7 @@ service Store {
 }
 
 message ExistsResponse {
-  repeated Status status = 1;
+  repeated sajari.rpc.Status status = 1;
 }
 
 // Score is a service which defines methods for setting and incrementing
@@ -71,7 +71,7 @@ message AddResponse {
   repeated Key keys = 1;
 
   // Status for each insert.
-  repeated Status status = 2;
+  repeated sajari.rpc.Status status = 2;
 }
 
 // GetResponse is returned from Get.
@@ -79,16 +79,16 @@ message GetResponse {
   repeated Record records = 1;
 
   // Status for each get.
-  repeated Status status = 2;
+  repeated sajari.rpc.Status status = 2;
 }
 
 // DeleteResponse is returned from Delete.
 message DeleteResponse {
-  repeated Status status = 1;
+  repeated sajari.rpc.Status status = 1;
 }
 
 message PatchResponse {
-  repeated Status status = 1;
+  repeated sajari.rpc.Status status = 1;
 }
 
 // Keys is a list of keys.
@@ -137,7 +137,7 @@ message SetRequest {
 }
 
 message SetResponse {
-  repeated Status status = 1;
+  repeated sajari.rpc.Status status = 1;
 }
 
 message IncrementRequest {
@@ -146,7 +146,7 @@ message IncrementRequest {
 
 // Increment response is
 message IncrementResponse {
-  repeated Status status = 1;
+  repeated sajari.rpc.Status status = 1;
 }
 
 message KeyScores {

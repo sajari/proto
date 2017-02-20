@@ -2,19 +2,21 @@ syntax = "proto3";
 
 package sajari.bayes.trainingset;
 
+import "sajari/rpc/empty.proto";
+
 // TrainingSet defines methods used to interact with the bayes training set service
 service TrainingSet {
   // Uploads a training/testing document for the specified training set name and known class name
   rpc Upload (UploadRequest) returns (UploadResponse);
 
   // Creates a new training set
-  rpc Create (CreateRequest) returns (Empty);
+  rpc Create (CreateRequest) returns (sajari.rpc.Empty);
 
   // Returns information on the specified training est
   rpc Info (InfoRequest) returns (InfoResponse);
 
   // Adds a new class to the training set
-  rpc AddClass (AddClassRequest) returns (Empty);
+  rpc AddClass (AddClassRequest) returns (sajari.rpc.Empty);
 }
 
 // UploadRequest encapsulates training data representing a document to add to the
@@ -65,5 +67,3 @@ message AddClassRequest {
   // Name of the class to add
   string class = 2;
 }
-
-message Empty {}

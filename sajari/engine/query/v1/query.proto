@@ -3,8 +3,8 @@ syntax = "proto3";
 package sajari.engine.query.v1;
 
 import "sajari/engine/value.proto";
-import "sajari/engine/status.proto";
 import "sajari/engine/key.proto";
+import "sajari/rpc/status.proto";
 
 // Service Query defines methods for querying an engine collection.
 service Query {
@@ -557,5 +557,5 @@ message AnalyseResponse {
   repeated Terms terms = 1;
 
   // Status corresponding to each key in the request.
-  repeated Status status = 2;
+  repeated sajari.rpc.Status status = 2;
 }
