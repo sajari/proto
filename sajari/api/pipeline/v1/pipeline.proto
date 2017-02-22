@@ -12,8 +12,8 @@ service Query {
 // Pipeline is an identifier used to specify a pipeline.
 message Pipeline {
   oneof pipeline {
-    // Label is a pipeline identifier.
-    string label = 1;
+    // Name uniquely defines a pipeline.
+    string name = 1;
   }
 }
 
@@ -22,7 +22,7 @@ message SearchRequest {
   // Pipeline to run.
   Pipeline pipeline = 1;
 
-  // Values is a mapping of label -> value which should be substituted
+  // Values is a mapping of key -> value which should be substituted
   // into the algorithm inputs.
   map<string,string> values = 2;
 
