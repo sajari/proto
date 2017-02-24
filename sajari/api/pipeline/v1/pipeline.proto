@@ -3,6 +3,7 @@ syntax = "proto3";
 package sajari.api.pipeline.v1;
 
 import "sajari/api/query/v1/query.proto";
+import "sajari/engine/query/v1/query.proto";
 
 // Query provides methods for querying collections using pipelines.
 service Query {
@@ -35,6 +36,9 @@ message SearchResponse {
   // Input values with updates/modifications by querying system.
   map<string, string> values = 1;
 
-  // SearchResponse is the response returned by the raw API.
-  sajari.api.query.v1.SearchResponse search_response = 2;
+  // SearchResponse from the engine request.
+  engine.query.v1.SearchResponse search_response = 2;
+
+  // Tokens which correspond to the result documents.
+  repeated sajari.api.query.v1.Token tokens = 3;
 }
