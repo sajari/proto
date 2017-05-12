@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package sajari.api.pipeline.v1;
+
+import "sajari/api/pipeline/v1/pipeline.proto";
+import "sajari/engine/store/record/record.proto";
+
+// Store provides methods for adding, mutating and deleting records
+// using pipelines.
+service Store {
+  // Add adds a list of records to a collection using a store pipeline.
+  rpc Add (AddRequest) returns (AddResponse);
+}
+
+// SearchRequest is a request to perform a search using a pipeline.
+message AddRequest {
+  // Pipeline to run.
+  Pipeline pipeline = 1;
+
+  // Values is a mapping of key -> value which should be substituted
+  // into the pipeline inputs.
+  map<string,string> values = 2;
+
+  // List of records to add.
+  repeated sajari.engine.store.record.Record records = 3;
+}
+
+// SearchResponse is a response to an Add call.
+message AddResponse {
+  sajari.engine.store.record.AddResponse response = 1;
+}

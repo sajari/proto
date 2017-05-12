@@ -2,43 +2,8 @@ syntax = "proto3";
 
 package sajari.api.pipeline.v1;
 
-import "sajari/api/query/v1/query.proto";
-import "sajari/engine/query/v1/query.proto";
-
-// Query provides methods for querying collections using pipelines.
-service Query {
-  rpc Search (SearchRequest) returns (SearchResponse);
-}
-
 // Pipeline is an identifier used to specify a pipeline.
 message Pipeline {
-  oneof pipeline {
-    // Name uniquely defines a pipeline.
-    string name = 1;
-  }
-}
-
-// SearchRequest is a request to perform a search using a pipeline.
-message SearchRequest {
-  // Pipeline to run.
-  Pipeline pipeline = 1;
-
-  // Values is a mapping of key -> value which should be substituted
-  // into the algorithm inputs.
-  map<string,string> values = 2;
-
-  // Tracking is the tracking configuration.
-  sajari.api.query.v1.SearchRequest.Tracking tracking = 3;
-}
-
-// SearchResponse is a response to a Search call.
-message SearchResponse {
-  // Input values with updates/modifications by querying system.
-  map<string, string> values = 1;
-
-  // SearchResponse from the engine request.
-  engine.query.v1.SearchResponse search_response = 2;
-
-  // Tokens which correspond to the result documents.
-  repeated sajari.api.query.v1.Token tokens = 3;
+  // Name uniquely defines a pipeline.
+  string name = 1;
 }
