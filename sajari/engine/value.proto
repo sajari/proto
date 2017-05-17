@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sajari.engine;
 
-// Value is a repesentation data of columnular data for a document.
+// Value is a repesentation data of columnular data for a record.
 message Value {
   // Repeated values
   message Repeated {

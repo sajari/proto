@@ -12,34 +12,34 @@ service Query {
   // the search results and additional information on the search.
   rpc Search (SearchRequest) returns (SearchResponse);
 
-  // Evaluate takes a search request and a document and runs the search against
-  // the document only.
+  // Evaluate takes a search request and a record and runs the search against
+  // the record only.
   rpc Evaluate (EvaluateRequest) returns (SearchResponse);
 
-  // Substitute takes a search request and a document and substitutes the document values
+  // Substitute takes a search request and a record and substitutes the record values
   // in the request.
   rpc Substitute (SubstituteRequest) returns (SearchRequest);
 
-  // Analyse takes an AnalyseRequest (comprised of a search query and a document identifier) and computes
+  // Analyse takes an AnalyseRequest (comprised of a search query and a record identifier) and computes
   // the term overlap between the two.
   rpc Analyse (AnalyseRequest) returns (AnalyseResponse);
 }
 
 // SearchRequest encompasses all the parameters necessary to query a search index.  Search requests
-// allow callers to select documents from a collection and return them in a score-based
+// allow callers to select records from a collection and return them in a score-based
 // ordering.
 //
-// Documents in the search index can be queried/scored using a combination of:
+// Records in the search index can be queried/scored using a combination of:
 // 1. Field values (key-value pairs set by the user).  See Filter, FieldBoost, Sort.
-// 2. Terms (extracted from the body of the document, or from string-based indexed fields).
+// 2. Terms (extracted from the body of the record, or from string-based indexed fields).
 //    See Body, Terms, InstanceBoost.
 //
 // Quering a search index follows three main steps:
-// 1. Selecting potentially suitable documents to include in a result set.
-// 2. Ranking and sorting the documents based on configurable scoring and/or sorting rules.
+// 1. Selecting potentially suitable records to include in a result set.
+// 2. Ranking and sorting the records based on configurable scoring and/or sorting rules.
 // 3. Computing aggregate statistical information from the result set.
 message SearchRequest {
-  // IndexQuery defines criteria for matching documents based on the search index.
+  // IndexQuery defines criteria for matching records based on the search index.
   message IndexQuery {
     // Body is a list of weighted free text.
     repeated Body body = 1;
@@ -47,15 +47,15 @@ message SearchRequest {
     // Terms is a list of weighted terms, where terms represent tokenised sequences of text.
     repeated Term terms = 2;
 
-    // InstanceBoosts are a list of boost rules computed against a document's term instances.
+    // InstanceBoosts are a list of boost rules computed against a record's term instances.
     //
-    // Instance boosting allows callers to boost documents which have terms that match
+    // Instance boosting allows callers to boost records which have terms that match
     // a rule.
     repeated InstanceBoost instance_boosts = 3;
 
-    // FieldBoosts are a list of rules checked against a document's field values.
+    // FieldBoosts are a list of rules checked against a record's field values.
     //
-    // Field boosting allows callers to boost documents which have field values that
+    // Field boosting allows callers to boost records which have field values that
     // match a rule.
     repeated FieldBoost field_boosts = 4;
   }
@@ -67,7 +67,7 @@ message SearchRequest {
       // FieldBoost to make a feature boost.
       sajari.engine.query.v1.FieldBoost field_boost = 1;
 
-      // Amount this boost will contribute to the overall score of the document.
+      // Amount this boost will contribute to the overall score of the record.
       //
       // Must be between 0 and 1.
       double value = 2;
@@ -77,10 +77,10 @@ message SearchRequest {
     repeated FieldBoost field_boosts = 1;
   }
 
-  // Filter is a rule checked against document field values.
+  // Filter is a rule checked against record field values.
   //
-  // Only documents that match the filter will be included in the result.
-  // By default all documents are included.
+  // Only records that match the filter will be included in the result.
+  // By default all records are included.
   Filter filter = 1;
 
   // IndexQuery is the matching configuration for index-based matching.
@@ -157,7 +157,7 @@ message SubstituteRequest {
   // Request is used as a template
   SearchRequest search_request = 1;
 
-  // Document is the record to be substituted in the request.
+  // Record is the record to be substituted in the request.
   map<string, Value> record = 2;
 }
 
@@ -201,15 +201,15 @@ message Aggregate {
     string field = 1;
   }
 
-  // Bucket groups documents using filters, Documents which satisfy the filter
+  // Bucket groups records using filters, Records which satisfy the filter
   // will be included in the bucket.
   message Bucket {
-    // Bucket represents documents which satisfy a Filter.
+    // Bucket represents records which satisfy a Filter.
     message Bucket {
       // Name of the bucket.
       string name = 1;
 
-      // Filter satisfied by documents in the bucket.
+      // Filter satisfied by records in the bucket.
       Filter filter = 2;
     }
 
@@ -224,7 +224,7 @@ message Aggregate {
   }
 }
 
-// Sort defines the ordering of result documents using.
+// Sort defines the ordering of result records using.
 message Sort {
   oneof type {
     // Sort by score.
@@ -255,10 +255,10 @@ message Sort {
   Order order = 5;
 }
 
-// Filter describes a set of conditions to match values in document fields.
+// Filter describes a set of conditions to match values in record fields.
 // Filters can be nested and combined using Combinators.
 message Filter {
-  // Field is a filter which is applied to a document field.
+  // Field is a filter which is applied to a record field.
   message Field {
     // Operator is an enumeration of operators.
     enum Operator {
@@ -298,7 +298,7 @@ message Filter {
     Value value = 3;
   }
 
-  // Geo is a geo-based filter for documents with lat/lng fields representing a location.
+  // Geo is a geo-based filter for records with lat/lng fields representing a location.
   message Geo {
     // Field containing latitude (degrees).
     string field_lat = 1;
@@ -361,22 +361,22 @@ message Filter {
   }
 }
 
-// FieldBoost is used to influence the score of a document based on its field values.
+// FieldBoost is used to influence the score of a record based on its field values.
 //
 // The effect of a FieldBoost is the value that it contributes to the overall score.
 // All boost effects are between 0 and 1 inclusive.
 message FieldBoost {
-  // Filter is a boost applied to documents which satisfy the filter.
+  // Filter is a boost applied to records which satisfy the filter.
   message Filter {
-    // Filter which must be satisfied by document.
+    // Filter which must be satisfied by record.
     sajari.engine.query.v1.Filter filter = 1;
 
-    // Boost value to apply to matching documents. Must be >= 0.
+    // Boost value to apply to matching records. Must be >= 0.
     //
-    // Value == 0     Matching documents get 0 for this boost, everything else gets 1.
-    // Value == 1     Matching documents get 1 for this boost, everything else gets 0.
-    // 0 < Value < 1  Matching documents get Value for this boost (and are penalised).
-    // Value > 1      Matching documents get 1 for this boost, everything else gets 1 / Value.
+    // Value == 0     Matching records get 0 for this boost, everything else gets 1.
+    // Value == 1     Matching records get 1 for this boost, everything else gets 0.
+    // 0 < Value < 1  Matching records get Value for this boost (and are penalised).
+    // Value > 1      Matching records get 1 for this boost, everything else gets 1 / Value.
     double value = 2;
   }
 
@@ -406,7 +406,7 @@ message FieldBoost {
   // Element is an element-based boost for repeated fields.
   //
   // The boost is evaluated as a portion of a list of values which appear
-  // in the document field.
+  // in the record field.
   //
   // Boost effect: between 0 and 1.
   message Element {
@@ -441,7 +441,7 @@ message FieldBoost {
 
 // InstanceBoost represents a boosting which is a applied to instances of terms
 // in the reverse index.  This type of boost effectively dynamically ranks
-// documents for a given term
+// records for a given term
 message InstanceBoost {
   // Field is an instance boost which is applied to term instances which originate
   // from the given meta field.
@@ -490,7 +490,7 @@ message AggregateResponse {
     message Bucket {
       // Name of bucket.
       string name = 1;
-      // Number of documents in the bucket.
+      // Number of records in the bucket.
       int32 count = 2;
     }
     map<string, Bucket> buckets = 1;
@@ -521,12 +521,12 @@ message SearchResponse {
   repeated Result results = 5;
 }
 
-// Result is a document as represented in a search result.
+// Result is a record as represented in a search result.
 message Result {
   // Meta data in field-value pairs.
   map<string, Value> values = 1;
 
-  // Score (normalised) attributed to this document.
+  // Score (normalised) attributed to this record.
   // Combines the index score and feature score.
   double score = 2;
 
@@ -534,25 +534,25 @@ message Result {
   double index_score = 3;
 }
 
-// AnalyseRequest applies a search request to a document.
+// AnalyseRequest applies a search request to a record.
 message AnalyseRequest {
-  // Request is a search request which should be applied against a document
+  // Request is a search request which should be applied against a record
   // in the store.
   SearchRequest search_request = 1;
 
-  // Key is a unique identifier corresponding to a document in the store.
+  // Key is a unique identifier corresponding to a record in the store.
   repeated sajari.engine.Key keys = 2;
 }
 
-// AnalyseResponse contains the analysis of the document against the query
+// AnalyseResponse contains the analysis of the record against the query
 // request.
 message AnalyseResponse {
-  // Terms is a list of terms which overlap for a particular document.
+  // Terms is a list of terms which overlap for a particular record.
   message Terms {
     repeated string terms = 1;
   }
 
-  // Terms is the list of intersecting terms between the document and the
+  // Terms is the list of intersecting terms between the record and the
   // search query request.
   repeated Terms terms = 1;
 

@@ -25,7 +25,7 @@ message Infos {
     // String representation.
     string value = 2;
 
-    // Number of documents that contain the term.
+    // Number of records that contain the term.
     uint32 num_docs = 3; // uint8
 
     // Number of words in the term.

@@ -32,6 +32,6 @@ message SearchResponse {
   // SearchResponse from the engine request.
   engine.query.v1.SearchResponse search_response = 2;
 
-  // Tokens which correspond to the result documents.
+  // Tokens which correspond to the result records.
   repeated sajari.api.query.v1.Token tokens = 3;
 }

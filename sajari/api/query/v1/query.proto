@@ -23,12 +23,12 @@ message SearchRequest {
       //
       // A click token will be generated for each result.  To register a click see <the other
       // API calls>.  Results which are returned and not clicked on will fall down rankings, and
-      // similarly low-ranked documents which receive clicks will be moved up the rankings.
+      // similarly low-ranked records which receive clicks will be moved up the rankings.
       CLICK = 1;
 
-      // Pos/neg tokens will be generated for each result.  Each document in the result set can be
+      // Pos/neg tokens will be generated for each result.  Each record in the result set can be
       // marked with pos/neg value for the search.  This is then fed back into the ranking algorithm
-      // to improve future results.  Unlike CLICK, if no tokens are reported for documents then
+      // to improve future results.  Unlike CLICK, if no tokens are reported for records then
       // no action is taken.
       POS_NEG = 2;
     }
@@ -36,8 +36,8 @@ message SearchRequest {
     // Tracking mode for query.
     //
     // Tracking is done using tokens which are added to result sets and identify individual results.
-    // Tokens are used to improve the ranking of documents by reporting clicks (i.e. positive action)
-    // or pos/neg (i.e positive or negative reporting) on the position of a document in results.
+    // Tokens are used to improve the ranking of records by reporting clicks (i.e. positive action)
+    // or pos/neg (i.e positive or negative reporting) on the position of a record in results.
     Type type = 1;
 
     // Query ID of the query.  If this is empty, then one is generated.
@@ -46,7 +46,7 @@ message SearchRequest {
     // Sequence number of query.
     int32 sequence = 3;
 
-    // Tracking field (must be unique in the collection) used to identify documents in the collection.
+    // Tracking field (must be unique in the collection) used to identify records in the collection.
     string field = 4;
 
     // Custom values to be included in tracking data.
@@ -69,21 +69,21 @@ message SearchResponse {
   // SearchRequest used in the query (if this has been changed).
   engine.query.v1.SearchRequest search_request = 2;
 
-  // Tokens which correspond to the result documents.
+  // Tokens which correspond to the result records.
   repeated Token tokens = 3;
 }
 
-// Tokens are used to mark result documents as well/poorly ranked for a query.
+// Tokens are used to mark result records as well/poorly ranked for a query.
 // TODO(dhowden): fix this comment!
 message Token {
-  // Click is a token that corresponds to selecting a document from a result set.
-  // It is taken as an indication that this document is a good match for the
+  // Click is a token that corresponds to selecting a record from a result set.
+  // It is taken as an indication that this record is a good match for the
   // corresponding SearchRequest.
   message Click {
     string token = 1;
   }
 
-  // PosNeg is a pair of tokens which are used to mark a document as a good/bad
+  // PosNeg is a pair of tokens which are used to mark a record as a good/bad
   // result for a SearchRequest.
   message PosNeg {
     string pos = 1;

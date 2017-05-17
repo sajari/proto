@@ -48,7 +48,7 @@ message Field {
   // Repeated sets that fields are repeated values (i.e. a list of values).
   bool repeated = 5;
 
-  // Required sets that the field must be specified when adding new documents.
+  // Required sets that the field must be specified when adding new records.
   bool required = 6;
 
   // Store is set to false if original values should not be stored. Ideal for large text
@@ -60,7 +60,7 @@ message Field {
   bool indexed = 8;
 
   // Unique is set to true if this field should contain unique values. Unique
-  // fields also support indexing to assist with fast document lookups
+  // fields also support indexing to assist with fast record lookups
   bool unique = 9;
 }
 
@@ -89,7 +89,7 @@ message MutateFieldRequest {
       // Repeated sets whether the field values are repeated.
       bool repeated = 4;
 
-      // Required sets whether the field value is required for index documents.
+      // Required sets whether the field value is required for index records.
       bool required = 5;
 
       // Unique sets whether the field must contain unique values.
