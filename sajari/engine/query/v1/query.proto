@@ -6,40 +6,39 @@ import "sajari/engine/value.proto";
 import "sajari/engine/key.proto";
 import "sajari/rpc/status.proto";
 
-// Service Query defines methods for querying an engine collection.
+// Service Query defines methods for querying a collection.
 service Query {
-  // Search takes a search request and returns a corresponding response containing.
-  // the search results and additional information on the search.
+  // Search runs a search query over all records in a collection.
   rpc Search (SearchRequest) returns (SearchResponse);
 
-  // Evaluate takes a search request and a record and runs the search against
-  // the record only.
+  // Evaluate runs a search query on a single record in a collection.
   rpc Evaluate (EvaluateRequest) returns (SearchResponse);
 
   // Substitute takes a search request and a record and substitutes the record values
   // in the request.
   rpc Substitute (SubstituteRequest) returns (SearchRequest);
 
-  // Analyse takes an AnalyseRequest (comprised of a search query and a record identifier) and computes
-  // the term overlap between the two.
+  // Analyse takes an AnalyseRequest (comprised of a search query and a record identifier)
+  // and computes the term overlap between the two.
   rpc Analyse (AnalyseRequest) returns (AnalyseResponse);
 }
 
-// SearchRequest encompasses all the parameters necessary to query a search index.  Search requests
-// allow callers to select records from a collection and return them in a score-based
-// ordering.
+// SearchRequest contains all the parameters to query a collection.
 //
-// Records in the search index can be queried/scored using a combination of:
+// Records in the collection can be queried/scored using a combination of:
 // 1. Field values (key-value pairs set by the user).  See Filter, FieldBoost, Sort.
-// 2. Terms (extracted from the body of the record, or from string-based indexed fields).
-//    See Body, Terms, InstanceBoost.
+// 2. Terms (extracted from the body of the record, or from string-based indexed fields,
+//    i.e. full-text style searching).  See Body, Terms, InstanceBoost.
 //
-// Quering a search index follows three main steps:
-// 1. Selecting potentially suitable records to include in a result set.
-// 2. Ranking and sorting the records based on configurable scoring and/or sorting rules.
-// 3. Computing aggregate statistical information from the result set.
+// Quering a collection follows three main steps:
+// 1. Select suitable records to include in a result set.
+// 2. Rank and sort the records based on scoring and/or sorting rules.
+// 3. Compute and aggregate statistical information from the result set.
 message SearchRequest {
-  // IndexQuery defines criteria for matching records based on the search index.
+  // IndexQuery defines criteria for matching and scoring records based on full-text style
+  // term matching and record field values.
+  //
+  // All boost applied here are multiplicative.
   message IndexQuery {
     // Body is a list of weighted free text.
     repeated Body body = 1;
@@ -47,20 +46,20 @@ message SearchRequest {
     // Terms is a list of weighted terms, where terms represent tokenised sequences of text.
     repeated Term terms = 2;
 
-    // InstanceBoosts are a list of boost rules computed against a record's term instances.
+    // InstanceBoosts are boost rules computed against a record's term instances.
     //
     // Instance boosting allows callers to boost records which have terms that match
     // a rule.
     repeated InstanceBoost instance_boosts = 3;
 
-    // FieldBoosts are a list of rules checked against a record's field values.
+    // FieldBoosts are rules checked against a record's field values.
     //
     // Field boosting allows callers to boost records which have field values that
     // match a rule.
     repeated FieldBoost field_boosts = 4;
   }
 
-  // FeatureQuery
+  // FeatureQuery defines criteria for boosting
   message FeatureQuery {
     // FieldBoost is a boost is a feature boost on a field.
     message FieldBoost {
@@ -95,7 +94,7 @@ message SearchRequest {
   // Limit is the number of results to return.
   int32 limit = 5;
 
-  // Fields to be returned for each result in the results.
+  // Fields to be returned for each record in the results.
   // By default all fields are returned.
   repeated string fields = 6;
 
@@ -139,7 +138,7 @@ message Term {
   // The position of this term instance in it's immediate context (i.e. paragraph).
   uint32 word_offset = 6;
 
-  // Paragraph offset (context) (uint16). 
+  // Paragraph offset (context) (uint16).
   // The paragraph position (a grouping of term instances) in a body string.
   uint32 para_offset = 7;
 }
@@ -265,7 +264,7 @@ message Filter {
       // Equal value.
       // For STRING fields this is case insensitive.
       EQUAL_TO = 0;
-      
+
       // Not equal value.
       // For STRING fields this is case insensitive.
       NOT_EQUAL_TO = 1;
@@ -366,7 +365,7 @@ message Filter {
 // The effect of a FieldBoost is the value that it contributes to the overall score.
 // All boost effects are between 0 and 1 inclusive.
 message FieldBoost {
-  // Filter is a boost applied to records which satisfy the filter.
+  // Filter is a boost applied to records which satisfy a filter.
   message Filter {
     // Filter which must be satisfied by record.
     sajari.engine.query.v1.Filter filter = 1;
@@ -380,7 +379,7 @@ message FieldBoost {
     double value = 2;
   }
 
-  // Interval is a distance-based boosting for numeric fields.
+  // Interval is a distance-based boost for numeric fields.
   //
   // It is comprised of a series of points to represent
   // any linear distribution across a numerical range.
