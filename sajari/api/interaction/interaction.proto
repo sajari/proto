@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package sajari.api.interaction;
+
+import "sajari/rpc/empty.proto";
+
+// Interaction provides methods for handling interactions with content.
+service Interaction {
+  // Consume accepts and records interactions.
+  rpc Consume (ConsumeRequest) returns (sajari.rpc.Empty);
+}
+
+// ConsumeRequest is used in Consume calls.
+message ConsumeRequest {
+  // Token to consume.
+  string token = 1;
+
+  // Identifier to distinguish different use of tokens.
+  string identifier = 2;
+
+  // Weight assigned to the interaction.
+  int32 weight = 3;
+
+  // Data to be recorded with the interaction.
+  map<string, string> data = 4;
+}
