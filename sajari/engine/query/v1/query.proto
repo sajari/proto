@@ -52,6 +52,20 @@ message SearchRequest {
     // a rule.
     repeated InstanceBoost instance_boosts = 3;
 
+    // Instance score mode sets the scoring mode for computing score normalisation.
+    enum InstanceScoreMode {
+      // Absolute-normalised scoring sets the maximum possible score to be
+      // when the exact terms are matched in every indexed field.
+      ABS = 0;
+
+      // Maximum-normalised scoring sets the maximum possible score to the maximally
+      // scoring index field.
+      MAX = 1;
+    }
+
+    // Score mode used for computing.
+    InstanceScoreMode instance_score_mode = 5;
+
     // FieldBoosts are rules checked against a record's field values.
     //
     // Field boosting allows callers to boost records which have field values that
