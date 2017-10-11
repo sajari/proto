@@ -7,6 +7,9 @@ import "sajari/engine/query/v1/query.proto";
 service Query {
   // Search performs a search.
   rpc Search (SearchRequest) returns (SearchResponse);
+
+  // Analyse performs analysis on a search and a set of records.
+  rpc Analyse (AnalyseRequest) returns (AnalyseResponse);
 }
 
 // SearchRequest
@@ -111,4 +114,14 @@ message Transform {
 
   // Identifier for the transform.
   string identifier = 2;
+}
+
+// AnalyseRequest is a wrapper for the engine AnalyseRequest message.
+message AnalyseRequest {
+  engine.query.v1.AnalyseRequest analyse_request = 1;
+}
+
+// AnaylseResponse is a wrapper for the engine AnalyseResponse message.
+message AnalyseResponse {
+  engine.query.v1.AnalyseResponse analyse_response = 1;
 }
