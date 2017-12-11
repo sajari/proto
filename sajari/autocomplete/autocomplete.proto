@@ -43,6 +43,11 @@ message TrainCorpusRequest {
   // The terms to train the corpus with. These should be correctly
   // spelt to avoid autocorrecting to misspellings.
   repeated string terms = 2;
+
+  // Number of times to repeat the training of the terms.
+  //
+  // Defaults to 1 if not set.
+  int32 repeat = 3;
 }
 
 // TrainQueryRequest is a query used to train the autocomplete
@@ -57,6 +62,11 @@ message TrainQueryRequest {
   // The query phrase broken into terms. Typically this would use spaces
   // as delimiters, but it is not restricted to spaces for language flexibility.
   repeated string terms = 3;
+
+  // Number of times to repeat the training of the query.
+  //
+  // Defaults to 1 if not set.
+  int32 repeat = 4;
 }
 
 // AutoCompleteRequest is a query to be autocompleted.
