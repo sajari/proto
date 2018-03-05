@@ -216,6 +216,10 @@ message Aggregate {
   message Count {
     // Name of the field to count values from.
     string field = 1;
+
+    // Minimum number of occurences of a value for it to be included
+    // in the aggregate. 
+    int32 min = 2;
   }
 
   // Bucket groups records using filters, Records which satisfy the filter
