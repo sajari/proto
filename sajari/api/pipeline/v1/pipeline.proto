@@ -6,4 +6,8 @@ package sajari.api.pipeline.v1;
 message Pipeline {
   // Name uniquely defines a pipeline.
   string name = 1;
+
+  // Description is an explanation of the purpose/behaviour
+  // of the pipeline.
+  string description = 2;
 }
