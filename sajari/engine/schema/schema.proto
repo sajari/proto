@@ -48,6 +48,9 @@ message Field {
   // Repeated sets that fields are repeated values (i.e. a list of values).
   bool repeated = 5;
 
+  // Repeated length sets the required length for the repeated field.
+  int32 repeated_len = 11;
+
   // Required sets that the field must be specified when adding new records.
   bool required = 6;
 
@@ -62,6 +65,21 @@ message Field {
   // Unique is set to true if this field should contain unique values. Unique
   // fields also support indexing to assist with fast record lookups
   bool unique = 9;
+
+  // Indexes is a list of indexes defined for the field.
+  repeated FieldIndex indexes = 10;
+}
+
+// FieldIndex
+message FieldIndex {
+  // ID used internally
+  uint32 id = 1; // uint16
+
+  // Specification of how it was created.
+  string spec = 2;
+
+  // Description of the index.
+  string description = 3;
 }
 
 // Response is the message type returned from AddFields and MutateField calls.
@@ -96,7 +114,11 @@ message MutateFieldRequest {
       bool unique = 6;
 
       // Indexed sets whether the field data is indexed.
+      // DEPRECATED: This attribute can't be changed, see add_index instead.
       bool indexed = 7;
+
+      // Adds an index to the field.
+      FieldIndex add_index = 8;
     }
   }
 

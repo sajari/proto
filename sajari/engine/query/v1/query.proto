@@ -44,6 +44,7 @@ message SearchRequest {
     repeated Body body = 1;
 
     // Terms is a list of weighted terms, where terms represent tokenised sequences of text.
+    // DEPRECATED: no longer supported, use new indexes property in Body instead.
     repeated Term terms = 2;
 
     // InstanceBoosts are boost rules computed against a record's term instances.
@@ -181,12 +182,31 @@ message SubstituteRequest {
 // Body is a weighted free text query.
 message Body {
   // Text (free text).
+  //
+  // DEPRECATED: use indexes instead.
+  // For backwards compatibility this will be converted into terms using the default
+  // index spec (Note: it will override any indexes already in the Body).
   string text = 1;
 
   // Weight (importance) to apply to this text.
   // This value must be 0 <= weight <= 1 but must be set. A value of zero means
   // the text has no value.
   double weight = 2;
+
+  message Index {
+    // The spec of the index.
+    string spec = 1;
+
+    // Groups of lists of terms (i.e. paragraphs).
+    repeated Terms terms = 2;
+  }
+
+  // Terms is a list of terms.
+  message Terms {
+    repeated string terms = 1;
+  }
+
+  repeated Index indexes = 3;
 }
 
 // Aggregate is a statistical query run on the result set of a search.
@@ -220,6 +240,9 @@ message Aggregate {
     // Minimum number of occurences of a value for it to be included
     // in the aggregate. 
     int32 min = 2;
+
+    // Limit the number of returned items.
+    int32 limit = 3;
   }
 
   // Bucket groups records using filters, Records which satisfy the filter
@@ -238,10 +261,30 @@ message Aggregate {
     repeated Bucket buckets = 1;
   }
 
+  message Date {
+    enum Interval {
+      YEAR = 0;
+      QUARTER = 1;
+      MONTH = 2;
+      WEEK = 3;
+      DAY = 4;
+      HOUR = 5;
+      MINUTE = 6;
+      SECOND = 7;
+    }
+
+    string field = 1;
+
+    Interval interval = 2;
+
+    float interval_multiple = 3;
+  }
+
   oneof aggregate {
     Metric metric = 1;
     Count count = 2;
     Bucket bucket = 3;
+    Date date = 4;
   }
 }
 
@@ -452,11 +495,20 @@ message FieldBoost {
     string text = 3;
   }
 
+  message Cosine {
+    // Field containing the vector data.
+    string field = 1;
+
+    // Vector to compute cosine against.
+    repeated float vector = 2;
+  }
+
   oneof field_boost {
     Filter filter = 1;
     Interval interval = 2;
     Element element = 3;
     Text text = 4;
+    Cosine cosine = 5;
   }
 }
 
@@ -470,12 +522,15 @@ message InstanceBoost {
     // Field where the term instance was defined.
     string field = 1;
 
+    // Spec defines how the index has been created.
+    string spec = 3;
+
     // Value to boost terms from this field. A value between 0 and 1 will decrease
     // the score, a value greater than 1 will increase the score.
     double value = 2;
   }
 
-  // Score is an instance boost that boosts term instances based on their individual
+  // Score is an instance boost that boosts term instances using on their individual
   // scores based on individual interactions.
   message Score {
     // Threshold defines the value after which learning will be applied.  i.e. Only if a learning
@@ -517,10 +572,15 @@ message AggregateResponse {
     map<string, Bucket> buckets = 1;
   }
 
+  message Date {
+    map<string, int32> dates = 1;
+  }
+
   oneof aggregate_response {
     Metric metric = 1;
     Count count = 2;
     Buckets buckets = 3;
+    Date date = 4;
   }
 }
 
