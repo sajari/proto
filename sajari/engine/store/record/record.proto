@@ -53,6 +53,28 @@ message Transform {
 message Record {
   // A map of key-value pairs.
   map<string, sajari.engine.Value> values = 1;
+
+  // A map of field-value indexes.
+  map<string, ValueIndexes> value_indexes = 2;
+}
+
+// Value indexes are a list of value indexes.
+message ValueIndexes {
+  repeated ValueIndex value_indexes = 1;
+}
+
+// A value index is the term-based representation for a value.
+message ValueIndex {
+  // Spec for analysis process used in index construction.
+  string spec = 1;
+
+  // Groups of lists of terms (i.e. paragraphs).
+  repeated Terms terms = 2;
+}
+
+// Terms is a list of terms.
+message Terms {
+  repeated string terms = 1;
 }
 
 // Records is a message which represents a list of records.
