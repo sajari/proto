@@ -476,6 +476,34 @@ message FieldBoost {
     // Points which define intervals boundaries (must be at least 2).
     // Values between internal points are determined linearly.
     repeated Point points = 2;
+
+    // Extension is an enumeration of options which define how to handle
+    // values which fall outside the interval.
+    enum Extension {
+      // Points outside the interval receive no boost.
+      NONE = 0;
+
+      // Extend the boost to apply before the defined region of the
+      // boosting interval.  All points before the interval are given
+      // the same value as the first defined point.
+      BEFORE = 1;
+
+      // Extend the boosting to apply after the defined region of the
+      // boosting interval.  All points after the interval are given
+      // the same value as the last defined point.
+      AFTER = 2;
+
+      // Extend the boosting to apply before and after the defined region.
+      // All points before the interval are given the same value as the
+      // first defined point, and similarly all points after the interval
+      // are given the same value as the last defined point.
+      //
+      // This is a combination of BEFORE and AFTER.
+      BEFORE_AFTER = 3;
+    }
+
+    // Extension defines how this boost behaves outside the interval.
+    Extension extend = 3;
   }
 
   // Element is an element-based boost for repeated fields.
