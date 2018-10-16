@@ -261,6 +261,7 @@ message Aggregate {
     repeated Bucket buckets = 1;
   }
 
+  // Date groups timestamp values into date-interval buckets.
   message Date {
     enum Interval {
       YEAR = 0;
@@ -273,10 +274,13 @@ message Aggregate {
       SECOND = 7;
     }
 
+    // Field to read values from.
     string field = 1;
 
+    // Interval to apply to buckets.
     Interval interval = 2;
 
+    // Multiple of interval value.
     float interval_multiple = 3;
   }
 
