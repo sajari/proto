@@ -56,10 +56,13 @@ message Field {
 
   // Store is set to false if original values should not be stored. Ideal for large text
   // fields that need to be indexed but will never be returned in results.
+  // DEPRECATED: this field is now ignored for incoming values, and will return
+  // false for all outgoing values.
   bool store = 7;
 
   // Indexed is set to true if this field should be indexed into a reverse index.
   // Only string and string array fields can be indexed.
+  // DEPRECATED: this field is now ignored for incoming values.
   bool indexed = 8;
 
   // Unique is set to true if this field should contain unique values. Unique
