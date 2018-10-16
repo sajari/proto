@@ -418,10 +418,17 @@ message Filter {
     repeated Filter filters = 2;
   }
 
+  // IsNull is a filter which checks if a value is set (i.e. is
+  // null).
+  message IsNull {
+    string Field = 1;
+  }
+
   oneof filter {
     Combinator combinator = 1;
     Field field = 2;
     Geo geo = 3;
+    IsNull is_null = 4;
   }
 }
 
