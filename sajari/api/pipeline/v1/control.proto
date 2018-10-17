@@ -1,0 +1,196 @@
+syntax = "proto3";
+
+package sajari.api.pipeline.v1;
+
+import "sajari/api/pipeline/v1/pipeline.proto";
+
+// QueryControl is a service that controls query pipelines.
+service QueryControl {
+  rpc Create(CreateQueryRequest) returns (CreateQueryResponse);
+  rpc Delete(DeleteQueryRequest) returns (DeleteQueryResponse);
+  rpc List(ListQueryRequest) returns (ListQueryResponse);
+  rpc ListSteps(ListStepsRequest) returns (ListStepsResponse);
+  rpc GetStep(GetStepRequest) returns (GetStepResponse);
+}
+
+message ListQueryRequest {}
+
+message ListQueryResponse {
+  repeated Pipeline pipelines = 1;
+}
+
+// Create a query pipeline for running Search requests against a collection.
+message CreateQueryRequest {
+  // Pipeline identifier to create.
+  Pipeline pipeline = 1;
+
+  // List of steps that the pipeline will run.
+  repeated CreateStep steps = 2;
+}
+
+message CreateQueryResponse {}
+
+message DeleteQueryRequest {
+  // Pipeline identifier to delete.
+  Pipeline pipeline = 1;
+}
+
+message DeleteQueryResponse {}
+
+// RecordControl is a service that controls record pipelines.
+service RecordControl {
+  rpc Create(CreateRecordRequest) returns (CreateRecordResponse);
+  rpc Delete(DeleteRecordRequest) returns (DeleteRecordResponse);
+  //rpc List(ListRecordRequest) returns (ListRecordResponse);
+  rpc ListSteps(ListStepsRequest) returns (ListStepsResponse);
+  rpc GetStep(GetStepRequest) returns (GetStepResponse);
+}
+
+message ListRecordRequest {}
+
+message ListRecordResponse {
+  repeated Pipeline pipelines = 1;
+}
+
+// Create a record pipeline for injesting data into a collection.
+message CreateRecordRequest {
+  // Pipeline identifier to create.
+  Pipeline pipeline = 1;
+
+  // List of steps that the pipeline will run.
+  repeated CreateStep pre_steps = 2;
+
+  // List of steps that the pipeline will run after the record
+  // has been added.
+  repeated CreateStep post_steps = 3;
+}
+
+message CreateRecordResponse {}
+
+message DeleteRecordRequest {
+  // Pipeline identifier to delete.
+  Pipeline pipeline = 1;
+}
+
+message DeleteRecordResponse {}
+
+// CreateStep creates a query pipeline step.
+message CreateStep {
+  // Identifier for this step.
+  string identifier = 1;
+
+  // Name for this step.
+  string name = 2;
+
+  // Description for this step.
+  string description = 3;
+
+  // Parameter options to be applied.
+  message ParamOpts {
+    message ParamOpt {
+      oneof opt {
+        // SetName assigns a name to the parameter.
+        string set_name = 1;
+        // SetDescription assigns a description to the parameter.
+        string set_description = 2;
+        // SetDefaultValue assigns a default value to the parameter.
+        string set_default_value = 3;
+      }
+    }
+    // List of parameter options.
+    repeated ParamOpt opts = 1;
+  }
+
+  // Identifier -> changes to apply
+  map<string,ParamOpts> param_opts = 4;
+
+  message ConstOpts {
+    message ConstOpt {
+      oneof opt {
+        // SetValue assigns a value to the constant.
+        string set_value = 3;
+      }
+    }
+    // Opts
+    repeated ConstOpt opts = 1;
+  }
+
+  // Identifier -> changes to apply
+  map<string,ConstOpts> const_opts = 5;
+}
+
+// ListStepsRequest is used to request a listing of steps.
+message ListStepsRequest {}
+
+// ListStepsResponse contains a list of steps.
+message ListStepsResponse {
+   // Step 
+   message Step {
+      string identifier = 1;
+      string name = 2;
+      string description = 3;
+   }
+
+   // List of steps.
+   repeated Step steps = 1;
+}
+
+// GetStepRequest
+message GetStepRequest {
+   string identifier = 1;
+}
+
+// GetStepResponse
+message GetStepResponse {
+    // Identifier for the step.
+    string identifier = 1;
+
+    // Name of the step.
+    string name = 2;
+
+    // Description of the step.
+    string description = 3;
+
+    // Constant defines a constant used in a pipeline step.  The value is configured up-front
+    // and cannot be changed by the step.
+    message Constant {
+        // ID uniquely defining the constant.
+      string id = 1;
+
+      // Type of the constant.
+      string type = 2;
+      
+      // Description information for the constant.
+      string description = 3;
+      
+      // Default value set.
+      string default_value = 4;
+    }
+
+    // Parameter defines a parameter used to customise a pipeline step.
+    message Parameter {
+      // ID which uniquely defines the parameter within the step.
+      string id = 1;
+
+      // Name of the pipeline parameter.
+      string name = 2;
+
+      // Type of the pipeline parameter.
+      string type = 3;
+
+      // Description information for the paramter.
+      string description = 4;
+
+      // Default value of the parameter.
+      string default_value = 5;
+    }
+
+    // Input parameters.
+    repeated Parameter inputs = 4;
+
+    // Output parameters.
+    repeated Parameter outputs = 5;
+
+    // Constants defined for step.
+    repeated Constant constants = 6;
+}

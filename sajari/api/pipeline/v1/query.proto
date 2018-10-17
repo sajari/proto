@@ -5,10 +5,12 @@ package sajari.api.pipeline.v1;
 import "sajari/api/query/v1/query.proto";
 import "sajari/engine/query/v1/query.proto";
 import "sajari/api/pipeline/v1/pipeline.proto";
+import "sajari/api/pipeline/v1/usage.proto";
 
 // Query provides methods for querying collections using pipelines.
 service Query {
   rpc Search (SearchRequest) returns (SearchResponse);
+  rpc Usage (UsageRequest) returns (QueryUsageResponse);
 }
 
 // SearchRequest is a request to perform a search using a pipeline.

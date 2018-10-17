@@ -4,12 +4,14 @@ package sajari.api.pipeline.v1;
 
 import "sajari/api/pipeline/v1/pipeline.proto";
 import "sajari/engine/store/record/record.proto";
+import "sajari/api/pipeline/v1/usage.proto";
 
 // Store provides methods for adding, mutating and deleting records
 // using pipelines.
 service Store {
   // Add adds a list of records to a collection using a store pipeline.
   rpc Add (AddRequest) returns (AddResponse);
+  rpc Usage (UsageRequest) returns (RecordUsageResponse);
 }
 
 // SearchRequest is a request to perform a search using a pipeline.
