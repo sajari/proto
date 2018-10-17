@@ -504,6 +504,9 @@ message FieldBoost {
 
     // Extension defines how this boost behaves outside the interval.
     Extension extend = 3;
+
+    // Value to apply to null values.
+    double NullValue = 4;
   }
 
   // Element is an element-based boost for repeated fields.
