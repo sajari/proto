@@ -53,12 +53,12 @@ message Field {
   int32 repeated_len = 11;
 
   // Required sets that the field must be specified when adding new records.
+  // DEPRECATED: use mode instead.
   bool required = 6;
 
   // Store is set to false if original values should not be stored. Ideal for large text
   // fields that need to be indexed but will never be returned in results.
-  // DEPRECATED: this field is now ignored for incoming values, and will return
-  // false for all outgoing values.
+  // DEPRECATED: this field is now ignored.
   bool store = 7;
 
   // Indexed is set to true if this field should be indexed into a reverse index.
@@ -67,8 +67,24 @@ message Field {
   bool indexed = 8;
 
   // Unique is set to true if this field should contain unique values. Unique
-  // fields also support indexing to assist with fast record lookups
+  // fields also support indexing to assist with fast record lookups.
+  // DEPRECATED: use mode instead.
   bool unique = 9;
+
+  // Mode is an enumeration of modes for a field.
+  enum Mode {
+    // Nullable fields do not need to be set.
+    NULLABLE = 0;
+
+    // Required fields must be specified (cannot be null).
+    REQUIRED = 1;
+
+    // Unique fields must be specified, and must be unique.
+    UNIQUE = 2;
+  }
+
+  // Mode of the field.
+  Mode mode = 12;
 
   // Indexes is a list of indexes defined for the field.
   repeated FieldIndex indexes = 10;
