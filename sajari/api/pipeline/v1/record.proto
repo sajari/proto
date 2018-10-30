@@ -11,6 +11,10 @@ import "sajari/api/pipeline/v1/usage.proto";
 service Store {
   // Add adds a list of records to a collection using a store pipeline.
   rpc Add (AddRequest) returns (AddResponse);
+
+  // Replace records in the collection using a store pipeline.
+  rpc Replace (ReplaceRequest) returns (ReplaceResponse);
+
   rpc Usage (UsageRequest) returns (RecordUsageResponse);
 }
 
@@ -30,4 +34,16 @@ message AddRequest {
 // SearchResponse is a response to an Add call.
 message AddResponse {
   sajari.engine.store.record.AddResponse response = 1;
+}
+
+message ReplaceRequest {
+  Pipeline pipeline = 1;
+
+  map<string,string> values = 2;
+
+  repeated sajari.engine.store.record.ReplaceRequest.KeyRecord key_records = 3;
+}
+
+message ReplaceResponse {
+  sajari.engine.store.record.ReplaceResponse response = 1;
 }
