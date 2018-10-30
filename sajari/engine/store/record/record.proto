@@ -14,6 +14,11 @@ service Store {
   // get/delete/patch.
   rpc Add (Records) returns (AddResponse);
 
+  // Replace existing records in the collection with the new values. If
+  // a record corresponding to the key does not already exist, then it
+  // is added instead.
+  rpc Replace (ReplaceRequest) returns (ReplaceResponse);
+
   // Get retrieves the records corresponding to the listed keys.
   rpc Get (Keys) returns (GetResponse);
 
@@ -190,4 +195,26 @@ message KeyScores {
 
   // Scores to update.
   repeated Score scores = 2;
+}
+
+message ReplaceRequest {
+  // Key record pairs for replacement.
+  message KeyRecord {
+    // Key to identify record with.
+    Key key = 1;
+
+    // Record to replace existing record with.
+    Record record = 2;
+  }
+
+  // List of key-records pairs to replace.
+  repeated KeyRecord key_records = 1;
+}
+
+message ReplaceResponse {
+  // Keys, non-empty for when replace actually did an Add instead.
+  repeated Key keys = 1;
+
+  // Status for each replacement.
+  repeated sajari.rpc.Status status = 2;
 }
