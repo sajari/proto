@@ -288,11 +288,48 @@ message Aggregate {
     float interval_multiple = 3;
   }
 
+  // Analysis performs field-data analysis.
+  message Analysis {
+    // Name of the field to run analysis on.
+    string field = 1;
+
+    enum Type {
+      // Number of records with the field set.
+      COVERAGE = 0;
+
+      // Number of unique values for the field.
+      CARDINALITY = 1;
+
+      // Average length of string-based fields.
+      AVG_LEN = 2;
+
+      // Minimum length of string-based fields.
+      MIN_LEN = 3;
+
+      // Maximum length of string-based fields.
+      MAX_LEN = 4;
+
+      // Average number of items in repeated fields.
+      AVG_REPEATED_LEN = 5;
+
+      // Minimum number of items in repeated fields.
+      MIN_REPEATED_LEN = 6;
+
+      // Maximum number of items in repeated fields.
+      MAX_REPEATED_LEN = 7;
+    }
+
+    // The of analysis to apply.
+    Type type = 2;
+  }
+
+
   oneof aggregate {
     Metric metric = 1;
     Count count = 2;
     Bucket bucket = 3;
     Date date = 4;
+    Analysis analysis = 5;
   }
 }
 
