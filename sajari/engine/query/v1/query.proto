@@ -653,11 +653,22 @@ message AggregateResponse {
     map<string, int32> dates = 1;
   }
 
+  message Analysis {
+    oneof value {
+      int32 Coverage = 1;
+      int32 Cardinality = 2;
+      int32 MinLen = 3;
+      int32 MaxLen = 4;
+      float AvgLen = 5;
+    }
+  }
+
   oneof aggregate_response {
     Metric metric = 1;
     Count count = 2;
     Buckets buckets = 3;
     Date date = 4;
+    Analysis analysis = 5;
   }
 }
 
