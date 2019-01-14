@@ -131,6 +131,21 @@ message SearchRequest {
 
   // Transforms to be applied to the request before it is run.
   repeated Transform transforms = 9;
+
+  // Aggregate filters is a list of aggregate-filter pairs
+  repeated AggregateFilter aggregate_filters = 12;
+}
+
+// AggregateFilter is an aggregate-filter pair.
+message AggregateFilter {
+  // Aggregate to run.
+  Aggregate aggregate = 1;
+
+  // Filter to apply when running the aggregate.
+  //
+  // NOTE: This filter is run on top of any filter applied
+  // to the entire query.
+  Filter filter = 2;
 }
 
 // Transform is a transformation of the search request to be applied before
@@ -685,6 +700,9 @@ message SearchResponse {
 
   // Aggregates returned by query.
   map<string, AggregateResponse> aggregates = 4;
+
+  // Aggregates run with filters.
+  repeated AggregateResponse aggregate_filters = 6;
 
   // Results returned by query.
   repeated Result results = 5;
