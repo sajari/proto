@@ -133,7 +133,7 @@ message SearchRequest {
   repeated Transform transforms = 9;
 
   // Aggregate filters is a list of aggregate-filter pairs
-  repeated AggregateFilter aggregate_filters = 12;
+  map<string, AggregateFilter> aggregate_filters = 12;
 }
 
 // AggregateFilter is an aggregate-filter pair.
@@ -702,7 +702,7 @@ message SearchResponse {
   map<string, AggregateResponse> aggregates = 4;
 
   // Aggregates run with filters.
-  repeated AggregateResponse aggregate_filters = 6;
+  map<string, AggregateResponse> aggregate_filters = 6;
 
   // Results returned by query.
   repeated Result results = 5;
