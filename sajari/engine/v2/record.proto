@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package sajari.engine.v2;
+
+option go_package = "code.sajari.com/protogen-go/sajari/engine/v2;enginepb";
+
+// Store is a service which defines methods for adding, getting, patching
+// and deleting records from a collection.
+service Store {
+  // Get retrieves the records corresponding to the listed keys.
+  rpc GetRecord (GetRecordRequest) returns (GetRecordResponse);
+
+  // DeleteRecord removes the records corresponding to the listed keys.
+  rpc DeleteRecord (DeleteRecordRequest) returns (DeleteRecordResponse);
+
+  // Mutate applies key-value updates to records corresponding to
+  // keys.
+  rpc MutateRecord (MutateRecordRequest) returns (MutateRecordResponse);
+}
+
+// Value is a repesentation data of columnular data for a record.
+message Value {
+  // Repeated values
+  message Repeated {
+    repeated string values = 1;
+  }
+
+  oneof value {
+      // Null value
+      bool null = 1;
+      // Single value
+      string single = 2;
+      // Repeated values.
+      Repeated repeated = 3;
+  }
+}
+
+// Key is a key-value pair that uniquely determines a record in a collection.
+// Any unique field in a collection can be used to create a key.
+message Key {
+  // Field is the meta field (must be a unique field).
+  string field = 1;
+
+  // Value is the identifying value.
+  Value value = 2;
+}
+
+// Record is a single record made up of key-value pairs.
+message Record {
+  // A map of key-value pairs.
+  map<string, Value> values = 1;
+}
+
+// GetRequest.
+message GetRecordRequest {
+   Key key = 1;
+}
+
+// GetResponse is returned from Get.
+message GetRecordResponse {
+  Record record = 1;
+}
+
+// DeleteRequest.
+message DeleteRecordRequest {
+   Key key = 1;
+}
+
+// DeleteResponse is returned from Delete.
+message DeleteRecordResponse {}
+
+message MutateRecordRequest {
+   // Key which uniquely identifies record.
+   Key key = 1;
+
+   // MutateField defines a mutation of a field.
+   message FieldMutation {
+      // Field is the name of the field to mutate.
+      string field = 1;
+
+      oneof mutation {
+         // Set overrides the current value with the value in set.
+         Value set = 2;
+
+         // Increment takes the current value and incremenets it using the
+         // numerical representation of incremenet.  Can only be used on numeric
+         // fields.
+         //
+         // Not yet implemented.
+         Value increment = 3;
+
+         // Append takes the current value and appends a new element to the
+         // end.  Can only be used on array fields.
+         //
+         // Not yet implemented.
+         Value append = 4;
+      }
+   }
+
+   // List of fields to mutate.
+   repeated FieldMutation field_mutations = 2;
+}
+
+message MutateRecordResponse {}

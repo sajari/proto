@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+package sajari.pipeline.v2;
+
+import "google/protobuf/timestamp.proto";
+
+import "sajari/pipeline/v2/pipeline.proto";
+
+option go_package = "code.sajari.com/protogen-go/sajari/pipeline/v2;pipelinepb";
+
+// PipelineAdmin is a service that administers pipelines.
+service PipelineAdmin {
+  // Create a new pipeline.
+  rpc CreatePipeline(CreatePipelineRequest) returns (CreatePipelineResponse);
+
+  // List pipelines.
+  rpc ListPipelines(ListPipelinesRequest) returns (ListPipelinesResponse);
+
+  // Get a pipeline.
+  rpc GetPipeline(GetPipelineRequest) returns (GetPipelineResponse);
+
+  // Set the default version of the pipeline.
+  rpc SetVersion(SetVersionRequest) returns (SetVersionResponse);
+
+  // Get the default version of the pipeline.
+  rpc GetVersion(GetVersionRequest) returns (GetVersionResponse);
+
+  // Delete a pipeline.
+  //
+  // Note: it is not possible to delete a pipeline if it is the default
+  // version.
+  rpc DeletePipeline(DeletePipelineRequest) returns (DeletePipelineResponse);
+}
+
+message GetPipelineRequest {
+  // Type of pipeline to get.
+  Type type = 1;
+
+  // Identifier for pipeline.
+  Identifier pipeline = 2;
+}
+
+message GetPipelineResponse {
+  // Type of the pipeline.
+  Type type = 1;
+
+  // Pipeline.
+  Identifier pipeline = 2;
+
+  // List of steps that the pipeline will run.
+  repeated CreateStep pre_steps = 3;
+
+  // List of steps that will be run after the action has been performed.
+  repeated CreateStep post_steps = 4;
+
+  // Time when the pipeline was created.
+  google.protobuf.Timestamp create_time = 5;
+}
+
+message SetVersionRequest {
+  // Type of the pipeline.
+  Type type = 1;
+
+  // Identfier for the pipeline.
+  Identifier pipeline = 2;
+}
+
+message SetVersionResponse {}
+
+message GetVersionRequest {
+  // Type of the pipeline.
+  Type type = 1;
+
+  // Identifier for the pipeline.
+  // Assumes that version is empty.
+  Identifier pipeline = 2;
+}
+
+message GetVersionResponse {
+  // Type of the pipeline.
+  Type type = 1;
+
+  // Identifier for the current default version.
+  Identifier pipeline = 2;
+
+  // Time when this default version was set.
+  google.protobuf.Timestamp create_time = 3;
+}
+
+message ListPipelinesRequest {
+  // Type of pipelines to list.
+  Type type = 1;
+
+  // Identifier to use as a query.
+  // Empty version means that only the name is used.
+  Identifier pipeline = 2;
+
+  // The maximum number of pipelines to return.
+  int32 page_size = 3;
+
+  // The `next_page_token` value returned from a previous List request, if any.
+  string page_token = 4;
+}
+
+message ListPipelinesResponse {
+  // The pipelines found.
+  repeated Identifier pipelines = 1;
+
+  // The next page token.
+  string next_page_token = 2;
+}
+
+// Create a pipeline.
+message CreatePipelineRequest {
+  // Type of pipeline to create.
+  Type type = 1;
+
+  // Pipeline identifier to create.
+  Identifier pipeline = 2;
+
+  // List of steps that the pipeline will run.
+  repeated CreateStep pre_steps = 3;
+
+  // List of steps that will be run after the action has been performed.
+  repeated CreateStep post_steps = 4;
+}
+
+// CreateStep creates a pipeline step.
+message CreateStep {
+  // Identifier for this step.
+  string name = 1;
+
+  // Title for this step, overrides the default title.
+  string title = 2;
+
+  // Description for this step, overrides the default description.
+  string description = 3;
+
+  // Parameter options to be applied.
+  message ParamOpts {
+    message ParamOpt {
+      oneof opt {
+        // SetName assigns a name to the parameter.
+        string set_name = 1;
+        // SetDescription assigns a description to the parameter.
+        string set_description = 2;
+        // SetDefaultValue assigns a default value to the parameter.
+        string set_default_value = 3;
+      }
+    }
+    // List of parameter options.
+    repeated ParamOpt opts = 1;
+  }
+
+  // Identifier -> changes to apply
+  map<string, ParamOpts> param_opts = 4;
+
+  message ConstOpts {
+    message ConstOpt {
+      oneof opt {
+        // SetValue assigns a value to the constant.
+        string set_value = 3;
+      }
+    }
+    // List of constant options.
+    repeated ConstOpt opts = 1;
+  }
+
+  // Identifier -> changes to apply
+  map<string, ConstOpts> const_opts = 5;
+}
+
+message CreatePipelineResponse {}
+
+message DeletePipelineRequest {
+  // Type of pipeline.
+  Type type = 1;
+
+  // Pipeline identifier to delete.
+  Identifier pipeline = 2;
+}
+
+message DeletePipelineResponse {}

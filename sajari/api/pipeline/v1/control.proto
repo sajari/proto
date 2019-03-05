@@ -4,16 +4,32 @@ package sajari.api.pipeline.v1;
 
 import "sajari/api/pipeline/v1/pipeline.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/api/pipeline/v1;piplinepb";
+
 // QueryControl is a service that controls query pipelines.
 service QueryControl {
   rpc Create(CreateQueryRequest) returns (CreateQueryResponse);
   rpc Delete(DeleteQueryRequest) returns (DeleteQueryResponse);
   rpc List(ListQueryRequest) returns (ListQueryResponse);
+
   rpc ListSteps(ListStepsRequest) returns (ListStepsResponse);
   rpc GetStep(GetStepRequest) returns (GetStepResponse);
+
+  rpc ListPostSteps(ListStepsRequest) returns (ListStepsResponse);
+  rpc GetPostStep(GetStepRequest) returns (GetStepResponse);
+
+  rpc SetVersion(SetVersionRequest) returns (SetVersionResponse);
 }
 
-message ListQueryRequest {}
+message SetVersionRequest {
+  Pipeline pipeline = 1;
+}
+
+message SetVersionResponse {}
+
+message ListQueryRequest {
+  Pipeline pipeline = 1;
+}
 
 message ListQueryResponse {
   repeated Pipeline pipelines = 1;
@@ -25,7 +41,10 @@ message CreateQueryRequest {
   Pipeline pipeline = 1;
 
   // List of steps that the pipeline will run.
-  repeated CreateStep steps = 2;
+  repeated CreateStep pre_steps = 2;
+
+  // List of steps that will be run after the query has been performed.
+  repeated CreateStep post_steps = 3;
 }
 
 message CreateQueryResponse {}
@@ -124,7 +143,7 @@ message ListStepsRequest {}
 
 // ListStepsResponse contains a list of steps.
 message ListStepsResponse {
-   // Step 
+   // Step
    message Step {
       string identifier = 1;
       string name = 2;
@@ -159,10 +178,10 @@ message GetStepResponse {
 
       // Type of the constant.
       string type = 2;
-      
+
       // Description information for the constant.
       string description = 3;
-      
+
       // Default value set.
       string default_value = 4;
     }

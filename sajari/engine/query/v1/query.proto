@@ -6,6 +6,8 @@ import "sajari/engine/value.proto";
 import "sajari/engine/key.proto";
 import "sajari/rpc/status.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/engine/query/v1";
+
 // Service Query defines methods for querying a collection.
 service Query {
   // Search runs a search query over all records in a collection.
@@ -187,7 +189,7 @@ message EvaluateRequest {
   SearchRequest search_request = 1;
 
   // Record to search against.
-  map<string, Value> record = 2;
+  sajari.engine.Key key = 2;
 }
 
 message SubstituteRequest {
@@ -217,12 +219,42 @@ message Body {
     string spec = 1;
 
     // Groups of lists of terms (i.e. paragraphs).
+    // DEPRECATED: use term expressions instead.
     repeated Terms terms = 2;
+
+    repeated TermExprs term_exprs = 3;
   }
 
   // Terms is a list of terms.
   message Terms {
     repeated string terms = 1;
+  }
+
+  message TermExprs {
+    repeated TermExpr term_exprs = 1;
+
+    message TermExpr {
+      // Text reprenting the term.
+      string text = 1;
+
+      // Alternatives to the term.
+      repeated Alternatives alternatives = 2;
+
+      message Alternatives {
+        // Text representing the alternative.
+        string text = 1;
+
+        // Weight used to compute the score to attribute to matches for this alternative
+        // (relative to a match for the original term).
+        string weight = 2;
+      }
+
+      // Required indicated that the term (or an alternative) must be present
+      // in the result for it to appear.
+      bool required = 3;
+
+      bool phrase = 4;
+    }
   }
 
   repeated Index indexes = 3;
@@ -257,7 +289,7 @@ message Aggregate {
     string field = 1;
 
     // Minimum number of occurences of a value for it to be included
-    // in the aggregate. 
+    // in the aggregate.
     int32 min = 2;
 
     // Limit the number of returned items.
@@ -337,7 +369,6 @@ message Aggregate {
     // The of analysis to apply.
     Type type = 2;
   }
-
 
   oneof aggregate {
     Metric metric = 1;
@@ -602,6 +633,9 @@ message FieldBoost {
     Text text = 4;
     Cosine cosine = 5;
   }
+
+  // Identifier for the boost.
+  string identifier = 6;
 }
 
 // InstanceBoost represents a boosting which is a applied to instances of terms
@@ -639,6 +673,9 @@ message InstanceBoost {
     // Score-based instance boosting.
     Score score = 2;
   }
+
+  // Identifier for this boost.
+  string identifier = 3;
 }
 
 // AggregateResponse contains statistical information representing aggregation results

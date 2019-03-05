@@ -1,0 +1,158 @@
+syntax = "proto3";
+
+package sajari.pipeline.v2;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/duration.proto";
+
+import "sajari/engine/v2/query.proto";
+import "sajari/engine/v2/record.proto";
+import "sajari/pipeline/v2/pipeline.proto";
+
+option go_package = "code.sajari.com/protogen-go/sajari/pipeline/v2;pipelinepb";
+
+// Query provides methods for querying collections using pipelines.
+service Query {
+  // Perform a search using a pipeline.
+  rpc Search (SearchRequest) returns (SearchResponse);
+  // Perform an evaluation of a search using a pipeline.
+  rpc Evaluate (EvaluateRequest) returns (EvaluateResponse);
+}
+
+// SearchRequest is a request to perform a search using a pipeline.
+message SearchRequest {
+  // Pipeline to run.
+  Identifier pipeline = 1;
+
+  // Values is a mapping of key -> value which should be substituted
+  // into the algorithm inputs.
+  google.protobuf.Struct values = 2;
+
+  // Tracking is the tracking configuration.
+  Tracking tracking = 3;
+}
+
+// SearchResponse is a response to a Search call.
+message SearchResponse {
+  // Identifier of the pipeline that was run.
+  Identifier pipeline = 1;
+
+  // Input values with updates/modifications by querying system.
+  google.protobuf.Struct values = 2;
+
+  // SearchResponse from the engine request.
+  QueryResults query_results = 3;
+
+  // Tokens which correspond to the result records.
+  repeated Token tokens = 4;
+}
+
+// EvaluateRequest is a request to perform a Evaluate using a pipeline.
+message EvaluateRequest {
+  // Pipeline to run.
+  Identifier pipeline = 1;
+
+  // Values is a mapping of key -> value which should be substituted
+  // into the algorithm inputs.
+  google.protobuf.Struct values = 2;
+
+  // Key of the record to run search against.
+  sajari.engine.v2.Key key = 3;
+}
+
+// EvaluateResponse is a response to a Evaluate call.
+message EvaluateResponse {
+  Identifier pipeline = 1;
+
+  // Input values with updates/modifications by querying system.
+  google.protobuf.Struct values = 2;
+
+  // QueryResults from the engine request.
+  QueryResults query_results = 3;
+}
+
+message Tracking {
+  enum Type {
+    // No tracking.
+    NONE = 0;
+
+    // Click tracking.
+    //
+    // A click token will be generated for each result.  Results which do not receive clicks
+    // will fall down rankings, and similarly low-ranked records which receive clicks will be
+    // moved up the rankings.
+    CLICK = 1;
+
+    // Pos/neg tracking.
+    //
+    // Pos/neg tokens will be generated for each result.  Each record in the result set can be
+    // marked with pos/neg value for the search.  This is then fed back into the ranking algorithm
+    // to improve future results.  Unlike CLICK, if no tokens are reported for records then
+    // no action is taken.
+    POS_NEG = 2;
+  }
+
+  // Tracking mode for query.
+  //
+  // Tracking is done using tokens which are added to result sets and identify individual results.
+  // Tokens are used to improve the ranking of records by reporting clicks (i.e. positive action)
+  // or pos/neg (i.e positive or negative reporting) on the position of a record in results.
+  Type type = 1;
+
+  // Query ID of the query.  If this is empty, then one is generated.
+  string query_id = 2;
+
+  // Sequence number of query.
+  int32 sequence = 3;
+
+  // Tracking field (must be unique in the collection) used to identify records in the collection.
+  string field = 4;
+
+  // Custom values to be included in tracking data.
+  map<string, string> data = 5;
+}
+
+// Tokens are used to mark result records as well/poorly ranked for a query.
+// TODO(dhowden): fix this comment!
+message Token {
+  // Click is a token that corresponds to selecting a record from a result set.
+  // It is taken as an indication that this record is a good match for the
+  // corresponding SearchRequest.
+  message Click {
+    string token = 1;
+  }
+
+  // PosNeg is a pair of tokens which are used to mark a record as a good/bad
+  // result for a SearchRequest.
+  message PosNeg {
+    string pos = 1;
+    string neg = 2;
+  }
+
+  oneof token {
+    Click click = 1;
+    PosNeg pos_neg = 2;
+  }
+}
+
+// QueryResults contains all data in response to a search request.
+message QueryResults {
+  // Number of reverse indexes read during the search request.
+  int64 reads = 1;
+
+  // Total number of results.
+  int64 total_results = 2;
+
+  // Time taken to perform query.
+  google.protobuf.Duration latency = 3;
+
+  // Aggregates returned by query.
+  map<string, sajari.engine.v2.QueryAggregateResult> aggregates = 4;
+
+  // Aggregates run with filters.
+  map<string, sajari.engine.v2.QueryAggregateResult> aggregate_filters = 6;
+
+  // Results returned by query.
+  repeated sajari.engine.v2.QueryResult results = 5;
+}
+

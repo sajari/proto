@@ -4,6 +4,8 @@ package sajari.autocomplete;
 
 import "sajari/rpc/empty.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/autocomplete;autocompletepb";
+
 // Control defines methods for creating and deleting autocomplete models.
 service Admin {
   // Create a new autocomplete model.

@@ -4,6 +4,8 @@ package sajari.engine;
 
 import "sajari/engine/value.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/engine";
+
 // Key is a key-value pair that uniquely determines a record in a collection.
 // Any unique field in a collection can be used to create a key.
 message Key {

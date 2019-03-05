@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package sajari.engine;
 
+option go_package = "code.sajari.com/protogen-go/sajari/engine";
+
 // Value is a repesentation data of columnular data for a record.
 message Value {
   // Repeated values

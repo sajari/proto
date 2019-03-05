@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package sajari.engine.store.term;
 
+option go_package = "code.sajari.com/protogen-go/sajari/engine/store/term";
+
 // Term defines methods for accesing terms.
 service Term {
   // Get the term with specified values.  Ignores any values which don't

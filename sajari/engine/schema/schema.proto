@@ -5,6 +5,8 @@ package sajari.engine.schema;
 import "sajari/rpc/empty.proto";
 import "sajari/rpc/status.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/engine/schema";
+
 // Service Schema defines methods for managing collection schemas.
 service Schema {
   // GetFields returns the fields in the schema.

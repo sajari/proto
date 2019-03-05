@@ -4,6 +4,8 @@ package sajari.api.pipeline.v1;
 
 import "sajari/api/pipeline/v1/pipeline.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/api/pipeline/v1;piplinepb";
+
 message UsageRequest {
   Pipeline pipeline = 1;
 }

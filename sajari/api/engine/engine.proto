@@ -4,6 +4,8 @@ package sajari.api.engine;
 
 import "sajari/rpc/empty.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/api/engine;enginepb";
+
 // Engine defines internal methods for admin control of an engine, including
 // creating/loading/unloading/listing (loaded) collections.
 service Engine {

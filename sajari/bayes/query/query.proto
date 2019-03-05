@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package sajari.bayes.query;
 
+option go_package = "code.sajari.com/protogen-go/sajari/bayes.query;bayesquerypb";
+
 // Query defines methods used to interact with the bayes query service.
 service Query {
   // Query takes a model name and an array of strings and returns a naive bayes

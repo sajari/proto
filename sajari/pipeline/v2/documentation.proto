@@ -1,0 +1,168 @@
+syntax = "proto3";
+
+package sajari.pipeline.v2;
+
+import "sajari/pipeline/v2/pipeline.proto";
+
+option go_package = "code.sajari.com/protogen-go/sajari/pipeline/v2;pipelinepb";
+
+// Documentation provides information on steps and pipelines.
+service Documentation {
+  // GetPipelineDocumentation.
+  rpc GetPipelineDocumentation (GetPipelineDocumentationRequest) returns (GetPipelineDocumentationResponse);
+
+  // List steps.
+  rpc ListSteps(ListStepsRequest) returns (ListStepsResponse);
+
+  // Get step documentation.
+  rpc GetStepDocumentation(GetStepDocumentationRequest) returns (GetStepDocumentationResponse);
+}
+
+message GetPipelineDocumentationRequest {
+  Type type = 1;
+
+  Identifier pipeline = 2;
+}
+
+// Usage is a message containing usage information for a query pipeline.
+message GetPipelineDocumentationResponse {
+  Type type = 1;
+
+  // Pipeline is the pipeline that this describes.
+  Identifier pipeline = 2;
+
+  // Steps is the list of steps that will be run for the pipeline.
+  repeated Step pre_steps = 3;
+
+  // Steps is the list of steps that will be run after the record
+  // has been applied to the engine.
+  repeated Step post_steps = 4;
+
+  // List of input parameters used in the pipeline.
+  repeated Parameter inputs = 5;
+
+  // List of output parameters returned by the pipeline.
+  repeated Parameter outputs = 6;
+}
+
+// Parameter defines a parameter used in pipelines to pass
+// user-defined values.
+message Parameter {
+  // Identifier for this parameter.
+  string identifier = 1;
+
+  // Name of the pipeline parameter.
+  string name = 2;
+
+  // Type of the pipeline parameter.
+  string type = 3;
+
+  // Description for the paramter.
+  string description = 4;
+
+  // Default value of the parameter.
+  string default_value = 5;
+}
+
+// Constant defines a constant used in a pipeline step, set by
+// the pipeline creator but cannot be changed by the caller.
+message Constant {
+  // Identifier for the constant.
+  string identifier = 1;
+
+  // Name of the constant.
+  string name = 2;
+
+  // Type of the constant.
+  string type = 3;
+
+  // Description informtion for the constant.
+  string description = 4;
+
+  // Value of the constant.
+  string value = 5;
+}
+
+// Step represents a single unit of work performed by the pipeline.
+message Step {
+  // Name of the action.
+  string name = 1;
+
+  // Description of the action.
+  string description = 2;
+
+  // List of input parameters used by the step.
+  repeated Parameter inputs = 3;
+
+  // List of output parameters returned by the step.
+  repeated Parameter outputs = 4;
+
+  // List of constants used by the step.
+  repeated Constant constants = 5;
+}
+
+// ListStepsRequest is used to request a listing of steps.
+message ListStepsRequest {
+  // Type of pipeline steps to list (query/record).
+  Type type = 1;
+
+  // Step types to list (pre/post).
+  StepType step_type = 2;
+
+  // The maximum number of steps to return.
+  int32 page_size = 3;
+
+  // The `next_page_token` value returned from a previous List request, if any.
+  string page_token = 4;
+}
+
+// ListStepsResponse contains a list of steps.
+message ListStepsResponse {
+  // Step
+  message Step {
+    // Type of pipeline this step refers to.
+    Type type = 1;
+
+    // Type of step (pre/post).
+    StepType step_type = 2;
+
+    // Identifer for step.
+    string identifier = 3;
+
+    // Name of step.
+    string name = 4;
+
+    // Description of step.
+    string description = 5;
+  }
+
+  // List of steps.
+  repeated Step steps = 1;
+
+  // The next page token.
+  string next_page_token = 2;
+}
+
+// GetStepDocumentationRequest
+message GetStepDocumentationRequest {
+  // Type of pipeline to fetch step for.
+  Type type = 1;
+
+  // Type of step to fetch.
+  StepType step_type = 2;
+
+  // Identifier for step.
+  string identifier = 3;
+}
+
+// GetStepDocumentationResponse
+message GetStepDocumentationResponse {
+  // Type of the pipeline.
+  Type type = 1;
+
+  // Type of the step.
+  StepType step_type = 2;
+
+  // Step information.
+  Step step = 3;
+}

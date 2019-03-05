@@ -3,13 +3,17 @@ syntax = "proto3";
 package sajari.api.pipeline.v1;
 
 import "sajari/api/query/v1/query.proto";
+import "sajari/engine/key.proto";
 import "sajari/engine/query/v1/query.proto";
 import "sajari/api/pipeline/v1/pipeline.proto";
 import "sajari/api/pipeline/v1/usage.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/api/pipeline/v1;piplinepb";
+
 // Query provides methods for querying collections using pipelines.
 service Query {
   rpc Search (SearchRequest) returns (SearchResponse);
+  rpc Evaluate(EvaluateRequest) returns (EvaluateResponse);
   rpc Usage (UsageRequest) returns (QueryUsageResponse);
 }
 
@@ -36,4 +40,26 @@ message SearchResponse {
 
   // Tokens which correspond to the result records.
   repeated sajari.api.query.v1.Token tokens = 3;
+}
+
+// EvaluateRequest is a request to perform a Evaluate using a pipeline.
+message EvaluateRequest {
+  // Pipeline to run.
+  Pipeline pipeline = 1;
+
+  // Values is a mapping of key -> value which should be substituted
+  // into the algorithm inputs.
+  map<string,string> values = 2;
+
+  // Key of the record to run search against.
+  sajari.engine.Key key = 3;
+}
+
+// EvaluateResponse is a response to a Evaluate call.
+message EvaluateResponse {
+  // Input values with updates/modifications by querying system.
+  map<string, string> values = 1;
+
+  // EvaluateResponse from the engine request.
+  engine.query.v1.SearchResponse search_response = 2;
 }

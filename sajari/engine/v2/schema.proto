@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package sajari.engine.v2;
+
+option go_package = "code.sajari.com/protogen-go/sajari/engine/v2;enginepb";
+
+// Service Schema defines methods for managing collection schemas.
+service Schema {
+  // ListFields returns the fields in the schema.
+  rpc ListFields (ListFieldsRequest) returns (ListFieldsResponse);
+
+  // CreateField create a new field in the schema.
+  rpc CreateField (CreateFieldRequest) returns (CreateFieldResponse);
+
+  // MutateField mutates a field in the schema.
+  rpc MutateField (MutateFieldRequest) returns (MutateFieldResponse);
+}
+
+// ListFieldsRequest.
+message ListFieldsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+// ListFieldResponse.
+message ListFieldsResponse {
+  repeated Field fields = 1;
+
+  int32 total_size = 2;
+
+  string next_page_token = 3;
+}
+
+// CreateFieldRequest.
+message CreateFieldRequest {
+  Field field = 1;
+}
+
+// Field defines the properties of of a field in the schema.
+message Field {
+  // Name of the field.
+  string name = 1;
+
+  // Description of the field.
+  string description = 2;
+
+  // Type represents the underlying data type of the field. Default is a string.
+  enum Type {
+    STRING = 0;
+    INTEGER = 1;
+    FLOAT = 2;
+    DOUBLE = 5;
+    BOOLEAN = 3;
+    TIMESTAMP = 4;
+  }
+
+  // Type of the field.
+  Type type = 3;
+
+  // Mode is an enumeration of modes for a field.
+  enum Mode {
+    // Nullable fields do not need to be set.
+    NULLABLE = 0;
+
+    // Required fields must be specified (cannot be null).
+    REQUIRED = 1;
+
+    // Unique fields must be specified, and must be unique.
+    UNIQUE = 2;
+  }
+
+  // Mode of the field.
+  Mode mode = 4;
+
+  // Repeated sets that fields are repeated values (i.e. a list of values).
+  bool repeated = 5;
+
+  // Repeated length sets the required length for the repeated field.
+  int32 repeated_len = 6;
+
+  // Indexes is a list of indexes defined for the field.
+  repeated FieldIndex indexes = 7;
+}
+
+// FieldIndex
+message FieldIndex {
+  // Specification of how it was created.
+  string spec = 2;
+
+  // Description of the index.
+  string description = 3;
+}
+
+// Response is the message type returned from AddFields and MutateField calls.
+message MutateFieldResponse {}
+
+message CreateFieldResponse {}
+
+// MutateFieldRequest is a message type passed to the MutateField method.
+message MutateFieldRequest {
+  // Name of the field to mutate.
+  string name = 1;
+
+  // Mutation is a mutation of a schema field.
+  message Mutation {
+    oneof mutation {
+      // Name is a new name for the field.
+      string name = 1;
+
+      // Description is the new description for the field.
+      string description = 2;
+
+      // Type changes the underlying type of the field.
+      Field.Type type = 3;
+
+      // Repeated sets whether the field values are repeated.
+      bool repeated = 4;
+
+      // Repeated sets whether the field values are repeated.
+      Field.Mode mode = 5;
+
+      // Adds an index to the field.
+      FieldIndex add_index = 6;
+    }
+  }
+
+  // List of mutations to apply to the field.  Each is taken individually, if there
+  // are any errors then the rest are ignored.
+  Mutation mutation = 2;
+}

@@ -6,6 +6,8 @@ import "sajari/api/pipeline/v1/pipeline.proto";
 import "sajari/engine/store/record/record.proto";
 import "sajari/api/pipeline/v1/usage.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/api/pipeline/v1;piplinepb";
+
 // Store provides methods for adding, mutating and deleting records
 // using pipelines.
 service Store {

@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package sajari.pipeline.v2;
+
+import "google/protobuf/struct.proto";
+
+import "sajari/pipeline/v2/pipeline.proto";
+import "sajari/engine/v2/record.proto";
+
+option go_package = "code.sajari.com/protogen-go/sajari/pipeline/v2;pipelinepb";
+
+// Store provides methods for creating and replacing records using pipelines.
+service Store {
+  // Create a records using a record pipeline.
+  rpc CreateRecord (CreateRecordRequest) returns (CreateRecordResponse);
+
+  // Replace a record using a record pipeline.
+  rpc ReplaceRecord (ReplaceRecordRequest) returns (ReplaceRecordResponse);
+}
+
+message CreateRecordRequest {
+  // Pipeline to run.
+  Identifier pipeline = 1;
+
+  // Values is a mapping of key -> value used as the pipeline parameters.
+  google.protobuf.Struct values = 2;
+
+  // Record to create.
+  sajari.engine.v2.Record record = 3;
+}
+
+message CreateRecordResponse {
+  // Pipeline to run.
+  Identifier pipeline = 1;
+
+  // Values is a mapping of key -> value pairs output from the pipeline
+  // parameters.
+  google.protobuf.Struct values = 2;
+
+  // Key of the created record.
+  sajari.engine.v2.Key key = 3;
+}
+
+message ReplaceRecordRequest {
+  // Pipeline to run.
+  Identifier pipeline = 1;
+
+  // Values is a mapping of key -> value used as the pipeline parameters.
+  google.protobuf.Struct values = 2;
+
+  // Key to identify the record to replace. If the key does not exist, then
+  // a record will be created instead of replaced.
+  sajari.engine.v2.Key key = 3;
+
+  // Record data to replace with existing.
+  sajari.engine.v2.Record record = 4;
+}
+
+message ReplaceRecordResponse {
+  // Pipeline to run.
+  Identifier pipeline = 1;
+
+  // Values set by the pipeline.
+  google.protobuf.Struct values = 2;
+
+  // Key of the created record, or empty if an existing record was replaced.
+  sajari.engine.v2.Key key = 3;
+}

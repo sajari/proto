@@ -1,19 +1,17 @@
 syntax = "proto3";
 
-package sajari.api.interaction;
+package sajari.interaction.v2;
 
-import "sajari/rpc/empty.proto";
-
-option go_package = "code.sajari.com/protogen-go/sajari/api/interaction;interactionpb";
+option go_package = "code.sajari.com/protogen-go/interaction/v2;interactionpb";
 
 // Interaction provides methods for handling interactions with content.
 service Interaction {
-  // Consume accepts and records interactions.
-  rpc Consume (ConsumeRequest) returns (sajari.rpc.Empty);
+  // Consume accepts and processes tokens from interactions.
+  rpc ConsumeToken (ConsumeTokenRequest) returns (ConsumeTokenResponse);
 }
 
-// ConsumeRequest is used in Consume calls.
-message ConsumeRequest {
+// ConsumeTokenRequest is used in Consume calls.
+message ConsumeTokenRequest {
   // Token to consume.
   string token = 1;
 
@@ -26,3 +24,5 @@ message ConsumeRequest {
   // Data to be recorded with the interaction.
   map<string, string> data = 4;
 }
+
+message ConsumeTokenResponse {}

@@ -4,6 +4,8 @@ package sajari.bayes.trainingset;
 
 import "sajari/rpc/empty.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/bayes/trainingset;bayestrainingsetpb";
+
 // TrainingSet defines methods used to interact with the bayes training set service
 service TrainingSet {
   // Uploads a training/testing document for the specified training set name and known class name

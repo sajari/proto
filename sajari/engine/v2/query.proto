@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package sajari.engine.v2;
+
+import "sajari/engine/v2/record.proto";
+
+option go_package = "code.sajari.com/protogen-go/sajari/engine/v2;enginepb";
+
+// QueryResult is a record as represented in a search result.
+message QueryResult {
+   // Meta data in field-value pairs.
+   map<string, sajari.engine.v2.Value> values = 1;
+
+   // Score (normalised) attributed to this record.
+   // Combines the index score and feature score.
+   double score = 2;
+
+   // Index score.
+   double index_score = 3;
+}
+
+// QueryAggregateResult contains results of aggregations.
+message QueryAggregateResult {
+   // Metric represents the metric type requested, represented by an Enumeration Type.
+   message Metric {
+      double value = 1;
+   }
+   // Count contains the counts for the set of values returned
+   message Count {
+      map<string, int32> counts = 1;
+   }
+
+   // Buckets is a full set of buckets computed in an aggregation.
+   message Buckets {
+      // Bucket is the result of a bucket aggregate.
+      message Bucket {
+         // Name of bucket.
+         string name = 1;
+         // Number of records in the bucket.
+         int32 count = 2;
+      }
+      map<string, Bucket> buckets = 1;
+   }
+
+   message Date {
+      map<string, int32> dates = 1;
+   }
+
+   message Analysis {
+      oneof value {
+         int32 Coverage = 1;
+         int32 Cardinality = 2;
+         int32 MinLen = 3;
+         int32 MaxLen = 4;
+         float AvgLen = 5;
+      }
+   }
+
+   oneof aggregate_result {
+      Metric metric = 1;
+      Count count = 2;
+      Buckets buckets = 3;
+      Date date = 4;
+      Analysis analysis = 5;
+   }
+}

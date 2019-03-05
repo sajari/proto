@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package sajari.rpc;
 
+option go_package = "code.sajari.com/protogen-go/sajari/rpc";
+
 // Status response
 message Status {
   // Status code related to the message.

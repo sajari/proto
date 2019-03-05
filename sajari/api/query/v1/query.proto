@@ -3,10 +3,15 @@ syntax = "proto3";
 package sajari.api.query.v1;
 
 import "sajari/engine/query/v1/query.proto";
+import "sajari/engine/key.proto";
+
+option go_package = "code.sajari.com/protogen-go/sajari/api/query/v1;querypb";
 
 service Query {
   // Search performs a search.
   rpc Search (SearchRequest) returns (SearchResponse);
+
+  rpc Evaluate (EvaluateRequest) returns (EvaluateResponse);
 
   // Analyse performs analysis on a search and a set of records.
   rpc Analyse (AnalyseRequest) returns (AnalyseResponse);
@@ -74,6 +79,18 @@ message SearchResponse {
 
   // Tokens which correspond to the result records.
   repeated Token tokens = 3;
+}
+
+message EvaluateRequest {
+  // Underlying search request to be passed to the engine
+  engine.query.v1.SearchRequest search_request = 1;
+
+  engine.Key key = 2;
+}
+
+message EvaluateResponse {
+  // SearchResponse from the engine request.
+  engine.query.v1.SearchResponse search_response = 1;
 }
 
 // Tokens are used to mark result records as well/poorly ranked for a query.

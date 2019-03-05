@@ -6,6 +6,8 @@ import "sajari/engine/value.proto";
 import "sajari/engine/key.proto";
 import "sajari/rpc/status.proto";
 
+option go_package = "code.sajari.com/protogen-go/sajari/engine/store/record";
+
 // Store is a service which defines methods for adding, getting, patching
 // and deleting records from a collection.
 service Store {

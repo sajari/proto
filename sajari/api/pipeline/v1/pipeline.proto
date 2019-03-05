@@ -2,16 +2,14 @@ syntax = "proto3";
 
 package sajari.api.pipeline.v1;
 
+option go_package = "code.sajari.com/protogen-go/sajari/api/pipeline/v1;piplinepb";
+
 // Pipeline is an identifier used to specify a pipeline.
 message Pipeline {
   // Name uniquely defines a pipeline.
   // [a-z][a-z0-9-]*
   string name = 1;
 
-  // Description is an explanation of the purpose/behaviour
-  // of the pipeline.
-  string description = 2;
-
   // Version is the unique identifier.
-  string version = 3;
+  string version = 2;
 }

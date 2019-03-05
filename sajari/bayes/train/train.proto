@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package sajari.bayes.train;
 
+option go_package = "code.sajari.com/protogen-go/sajari/bayes/train;bayestrainpb";
+
 // Train defines methods used to interact with the bayes training service
 service Train {
   // Train takes a set of training and testing documents representing
