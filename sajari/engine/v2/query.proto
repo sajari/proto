@@ -48,11 +48,21 @@ message QueryAggregateResult {
 
    message Analysis {
       oneof value {
-         int32 Coverage = 1;
-         int32 Cardinality = 2;
-         int32 MinLen = 3;
-         int32 MaxLen = 4;
-         float AvgLen = 5;
+         // Coverage is the number of records which have a value
+         // set.
+         int32 coverage = 1;
+
+         // Cardinality is the number of different values in a field.
+         int32 cardinality = 2;
+
+         // Min length of a repeated field.
+         int32 min_len = 3;
+
+         // Max number of values in a repeated field.
+         int32 max_len = 4;
+
+         // Avg number of items in repeated field.
+         float avg_len = 5;
       }
    }
 
