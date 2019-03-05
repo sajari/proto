@@ -20,10 +20,10 @@ service PipelineAdmin {
   rpc GetPipeline(GetPipelineRequest) returns (GetPipelineResponse);
 
   // Set the default version of the pipeline.
-  rpc SetVersion(SetVersionRequest) returns (SetVersionResponse);
+  rpc SetDefaultPipeline(SetDefaultPipelineRequest) returns (GetDefaultPipelineResponse);
 
   // Get the default version of the pipeline.
-  rpc GetVersion(GetVersionRequest) returns (GetVersionResponse);
+  rpc GetDefaultPipeline(GetDefaultPipelineRequest) returns (GetDefaultPipelineResponse);
 
   // Delete a pipeline.
   //
@@ -57,7 +57,7 @@ message GetPipelineResponse {
   google.protobuf.Timestamp create_time = 5;
 }
 
-message SetVersionRequest {
+message SetDefaultPipelineRequest {
   // Type of the pipeline.
   Type type = 1;
 
@@ -65,9 +65,9 @@ message SetVersionRequest {
   Identifier pipeline = 2;
 }
 
-message SetVersionResponse {}
+message SetDefaultPipelineResponse {}
 
-message GetVersionRequest {
+message GetDefaultPipelineRequest {
   // Type of the pipeline.
   Type type = 1;
 
@@ -76,7 +76,7 @@ message GetVersionRequest {
   Identifier pipeline = 2;
 }
 
-message GetVersionResponse {
+message GetDefaultPipelineResponse {
   // Type of the pipeline.
   Type type = 1;
 
