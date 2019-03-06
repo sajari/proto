@@ -49,9 +49,9 @@ message Field {
     STRING = 0;
     INTEGER = 1;
     FLOAT = 2;
-    DOUBLE = 5;
-    BOOLEAN = 3;
-    TIMESTAMP = 4;
+    DOUBLE = 3;
+    BOOLEAN = 4;
+    TIMESTAMP = 5;
   }
 
   // Type of the field.
