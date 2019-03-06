@@ -48,10 +48,10 @@ message GetPipelineResponse {
   Identifier pipeline = 2;
 
   // List of steps that the pipeline will run.
-  repeated CreateStep pre_steps = 3;
+  repeated StepConfig pre_steps = 3;
 
   // List of steps that will be run after the action has been performed.
-  repeated CreateStep post_steps = 4;
+  repeated StepConfig post_steps = 4;
 
   // Time when the pipeline was created.
   google.protobuf.Timestamp create_time = 5;
@@ -118,17 +118,23 @@ message CreatePipelineRequest {
   // Pipeline identifier to create.
   Identifier pipeline = 2;
 
+  // Title of the pipeline.
+  string title = 3;
+
+  // Description of the pipeline.
+  string description = 4;
+
   // List of steps that the pipeline will run.
-  repeated CreateStep pre_steps = 3;
+  repeated StepConfig pre_steps = 5;
 
   // List of steps that will be run after the action has been performed.
-  repeated CreateStep post_steps = 4;
+  repeated StepConfig post_steps = 6;
 }
 
-// CreateStep creates a pipeline step.
-message CreateStep {
-  // Identifier for this step.
-  string name = 1;
+// StepConfig creates a pipeline step.
+message StepConfig {
+  // Identifier of the step template.
+  string identifier = 1;
 
   // Title for this step, overrides the default title.
   string title = 2;
@@ -136,10 +142,10 @@ message CreateStep {
   // Description for this step, overrides the default description.
   string description = 3;
 
-  // Parameter options to be applied.
-  message ParamOpts {
-    message ParamOpt {
-      oneof opt {
+  // Parameter configurations to be applied.
+  message ParameterConfigs {
+    message ParameterConfig {
+      oneof config {
         // SetName assigns a name to the parameter.
         string set_name = 1;
         // SetDescription assigns a description to the parameter.
@@ -149,25 +155,25 @@ message CreateStep {
       }
     }
     // List of parameter options.
-    repeated ParamOpt opts = 1;
+    repeated ParameterConfig configs = 1;
   }
 
   // Identifier -> changes to apply
-  map<string, ParamOpts> param_opts = 4;
+  map<string, ParameterConfigs> parameter_configs = 4;
 
-  message ConstOpts {
-    message ConstOpt {
-      oneof opt {
+  message ConstantConfigs {
+    message ConstantConfig {
+      oneof config {
         // SetValue assigns a value to the constant.
         string set_value = 3;
       }
     }
     // List of constant options.
-    repeated ConstOpt opts = 1;
+    repeated ConstantConfig configs = 1;
   }
 
   // Identifier -> changes to apply
-  map<string, ConstOpts> const_opts = 5;
+  map<string, ConstantConfigs> constant_configs = 5;
 }
 
 message CreatePipelineResponse {}

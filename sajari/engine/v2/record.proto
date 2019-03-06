@@ -4,17 +4,15 @@ package sajari.engine.v2;
 
 option go_package = "code.sajari.com/protogen-go/sajari/engine/v2;enginepb";
 
-// Store is a service which defines methods for adding, getting, patching
-// and deleting records from a collection.
+// Store is a service which defines methods for getting, mutating and deleting records.
 service Store {
-  // Get retrieves the records corresponding to the listed keys.
+  // GetRecord retrieves a record.
   rpc GetRecord (GetRecordRequest) returns (GetRecordResponse);
 
-  // DeleteRecord removes the records corresponding to the listed keys.
+  // DeleteRecord removes a records.
   rpc DeleteRecord (DeleteRecordRequest) returns (DeleteRecordResponse);
 
-  // Mutate applies key-value updates to records corresponding to
-  // keys.
+  // MutateRecord applies mutations to a record.
   rpc MutateRecord (MutateRecordRequest) returns (MutateRecordResponse);
 }
 
@@ -97,7 +95,7 @@ message MutateRecordRequest {
       }
    }
 
-   // List of fields to mutate.
+   // List of field mutations to apply.
    repeated FieldMutation field_mutations = 2;
 }
 

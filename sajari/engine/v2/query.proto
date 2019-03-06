@@ -9,7 +9,7 @@ option go_package = "code.sajari.com/protogen-go/sajari/engine/v2;enginepb";
 // QueryResult is a record as represented in a search result.
 message QueryResult {
    // Meta data in field-value pairs.
-   map<string, sajari.engine.v2.Value> values = 1;
+   map<string, Value> values = 1;
 
    // Score (normalised) attributed to this record.
    // Combines the index score and feature score.

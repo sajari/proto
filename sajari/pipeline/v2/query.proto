@@ -112,8 +112,7 @@ message Tracking {
   map<string, string> data = 5;
 }
 
-// Tokens are used to mark result records as well/poorly ranked for a query.
-// TODO(dhowden): fix this comment!
+// Tokens are used to carry ranking information for query results.
 message Token {
   // Click is a token that corresponds to selecting a record from a result set.
   // It is taken as an indication that this record is a good match for the

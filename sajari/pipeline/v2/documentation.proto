@@ -85,20 +85,29 @@ message Constant {
 
 // Step represents a single unit of work performed by the pipeline.
 message Step {
+  // Type of pipeline this step applies to.
+  Type type = 1;
+
+  // Type of step.
+  StepType step_type = 2;
+
+  // Identifier
+  string identifier = 3;
+
   // Name of the action.
-  string name = 1;
+  string title = 4;
 
   // Description of the action.
-  string description = 2;
+  string description = 5;
 
   // List of input parameters used by the step.
-  repeated Parameter inputs = 3;
+  repeated Parameter inputs = 6;
 
   // List of output parameters returned by the step.
-  repeated Parameter outputs = 4;
+  repeated Parameter outputs = 7;
 
   // List of constants used by the step.
-  repeated Constant constants = 5;
+  repeated Constant constants = 8;
 }
 
 // ListStepsRequest is used to request a listing of steps.
@@ -129,8 +138,8 @@ message ListStepsResponse {
     // Identifer for step.
     string identifier = 3;
 
-    // Name of step.
-    string name = 4;
+    // Title of step.
+    string title = 4;
 
     // Description of step.
     string description = 5;

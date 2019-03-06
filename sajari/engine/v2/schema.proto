@@ -18,23 +18,32 @@ service Schema {
 
 // ListFieldsRequest.
 message ListFieldsRequest {
+  // Number of fields to return per page.  The default page size is 100.
   int32 page_size = 1;
+
+  // The `next_page_token` value returned from a previous List request, if any.
   string page_token = 2;
 }
 
 // ListFieldResponse.
 message ListFieldsResponse {
+  // Fields.
   repeated Field fields = 1;
 
+  // Maximum number of fields to return.
   int32 total_size = 2;
 
+  // Next page token.
   string next_page_token = 3;
 }
 
 // CreateFieldRequest.
 message CreateFieldRequest {
+  // Field to create.
   Field field = 1;
 }
+
+message CreateFieldResponse {}
 
 // Field defines the properties of a field in the schema.
 message Field {
@@ -46,11 +55,22 @@ message Field {
 
   // Type represents the underlying data type of the field. Default is a string.
   enum Type {
+    // String values.
     STRING = 0;
+
+    // Integer values (64-bit).
     INTEGER = 1;
+
+    // Floating point values (32-bit).
     FLOAT = 2;
+
+    // Double floating point values (64-bit).
     DOUBLE = 3;
+
+    // Boolean values.
     BOOLEAN = 4;
+
+    // Timestamp values.
     TIMESTAMP = 5;
   }
 
@@ -59,7 +79,7 @@ message Field {
 
   // Mode is an enumeration of modes for a field.
   enum Mode {
-    // Nullable fields do not need to be set.
+    // Nullable fields do not need to be specified.
     NULLABLE = 0;
 
     // Required fields must be specified (cannot be null).
@@ -84,17 +104,12 @@ message Field {
 
 // FieldIndex
 message FieldIndex {
-  // Specification of how it was created.
-  string spec = 2;
+  // Specification defining how the index was created.
+  string spec = 1;
 
   // Description of the index.
-  string description = 3;
+  string description = 2;
 }
-
-// Response is the message type returned from AddFields and MutateField calls.
-message MutateFieldResponse {}
-
-message CreateFieldResponse {}
 
 // MutateFieldRequest is a message type passed to the MutateField method.
 message MutateFieldRequest {
@@ -127,3 +142,5 @@ message MutateFieldRequest {
   // Mutation to apply to the field.
   Mutation mutation = 2;
 }
+
+message MutateFieldResponse {}
