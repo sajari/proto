@@ -33,67 +33,48 @@ service PipelineAdmin {
 }
 
 message GetPipelineRequest {
-  // Type of pipeline to get.
-  Type type = 1;
-
   // Identifier for pipeline.
-  Identifier pipeline = 2;
+  TypeIdentifier pipeline = 1;
 }
 
 message GetPipelineResponse {
-  // Type of the pipeline.
-  Type type = 1;
-
-  // Pipeline.
-  Identifier pipeline = 2;
+  // Identifier for pipeline.
+  TypeIdentifier pipeline = 1;
 
   // List of steps that the pipeline will run.
-  repeated StepConfig pre_steps = 3;
+  repeated StepConfig pre_steps = 2;
 
   // List of steps that will be run after the action has been performed.
-  repeated StepConfig post_steps = 4;
+  repeated StepConfig post_steps = 3;
 
   // Time when the pipeline was created.
-  google.protobuf.Timestamp create_time = 5;
+  google.protobuf.Timestamp create_time = 4;
 }
 
 message SetDefaultPipelineRequest {
-  // Type of the pipeline.
-  Type type = 1;
-
-  // Identfier for the pipeline.
-  Identifier pipeline = 2;
+  // Identifier for pipeline.
+  TypeIdentifier pipeline = 1;
 }
 
 message SetDefaultPipelineResponse {}
 
 message GetDefaultPipelineRequest {
-  // Type of the pipeline.
-  Type type = 1;
-
-  // Identifier for the pipeline.
-  // Assumes that version is empty.
-  Identifier pipeline = 2;
+  // Identifier for pipeline.  Assumes that the
+  // version is empty.
+  TypeIdentifier pipeline = 1;
 }
 
 message GetDefaultPipelineResponse {
-  // Type of the pipeline.
-  Type type = 1;
-
-  // Identifier for the current default version.
-  Identifier pipeline = 2;
+  // Identifier for pipeline.
+  TypeIdentifier pipeline = 1;
 
   // Time when this default version was set.
   google.protobuf.Timestamp create_time = 3;
 }
 
 message ListPipelinesRequest {
-  // Type of pipelines to list.
-  Type type = 1;
-
-  // Identifier to use as a query.
-  // Empty version means that only the name is used.
-  Identifier pipeline = 2;
+  // Identifier for pipeline.
+  TypeIdentifier pipeline = 1;
 
   // The maximum number of pipelines to return.
   int32 page_size = 3;
@@ -104,7 +85,7 @@ message ListPipelinesRequest {
 
 message ListPipelinesResponse {
   // The pipelines found.
-  repeated Identifier pipelines = 1;
+  repeated TypeIdentifier pipelines = 1;
 
   // The next page token.
   string next_page_token = 2;
@@ -112,11 +93,8 @@ message ListPipelinesResponse {
 
 // Create a pipeline.
 message CreatePipelineRequest {
-  // Type of pipeline to create.
-  Type type = 1;
-
-  // Pipeline identifier to create.
-  Identifier pipeline = 2;
+  // Identifier for pipeline.
+  TypeIdentifier pipeline = 1;
 
   // Title of the pipeline.
   string title = 3;

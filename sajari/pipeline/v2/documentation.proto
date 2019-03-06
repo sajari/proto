@@ -11,11 +11,11 @@ service Documentation {
   // GetPipelineDocumentation.
   rpc GetPipelineDocumentation (GetPipelineDocumentationRequest) returns (GetPipelineDocumentationResponse);
 
-  // List steps.
-  rpc ListSteps(ListStepsRequest) returns (ListStepsResponse);
+  // List step templates that can be used in creating pipelines.
+  rpc ListStepTemplates(ListStepTemplatesRequest) returns (ListStepTemplatesResponse);
 
-  // Get step documentation.
-  rpc GetStepDocumentation(GetStepDocumentationRequest) returns (GetStepDocumentationResponse);
+  // Get step template documentation.
+  rpc GetStepTemplateDocumentation(GetStepTemplateDocumentationRequest) returns (GetStepTemplateDocumentationResponse);
 }
 
 message GetPipelineDocumentationRequest {
@@ -26,23 +26,21 @@ message GetPipelineDocumentationRequest {
 
 // Usage is a message containing usage information for a query pipeline.
 message GetPipelineDocumentationResponse {
-  Type type = 1;
-
-  // Pipeline is the pipeline that this describes.
-  Identifier pipeline = 2;
+  // Identifier for pipeline.
+  TypeIdentifier pipeline = 1;
 
   // Steps is the list of steps that will be run for the pipeline.
-  repeated Step pre_steps = 3;
+  repeated Step pre_steps = 2;
 
   // Steps is the list of steps that will be run after the record
   // has been applied to the engine.
-  repeated Step post_steps = 4;
+  repeated Step post_steps = 3;
 
   // List of input parameters used in the pipeline.
-  repeated Parameter inputs = 5;
+  repeated Parameter inputs = 4;
 
   // List of output parameters returned by the pipeline.
-  repeated Parameter outputs = 6;
+  repeated Parameter outputs = 5;
 }
 
 // Parameter defines a parameter used in pipelines to pass
@@ -91,13 +89,13 @@ message Step {
   // Type of step.
   StepType step_type = 2;
 
-  // Identifier
+  // Identifier.
   string identifier = 3;
 
-  // Name of the action.
+  // Title of the step.
   string title = 4;
 
-  // Description of the action.
+  // Description of the step.
   string description = 5;
 
   // List of input parameters used by the step.
@@ -110,8 +108,8 @@ message Step {
   repeated Constant constants = 8;
 }
 
-// ListStepsRequest is used to request a listing of steps.
-message ListStepsRequest {
+// ListStepTemplatesRequest is used to request a listing of step templates.
+message ListStepTemplatesRequest {
   // Type of pipeline steps to list (query/record).
   Type type = 1;
 
@@ -126,9 +124,9 @@ message ListStepsRequest {
 }
 
 // ListStepsResponse contains a list of steps.
-message ListStepsResponse {
-  // Step
-  message Step {
+message ListStepTemplatesResponse {
+  // Step template
+  message StepTemplate {
     // Type of pipeline this step refers to.
     Type type = 1;
 
@@ -146,32 +144,25 @@ message ListStepsResponse {
   }
 
   // List of steps.
-  repeated Step steps = 1;
+  repeated Step step_templates = 1;
 
   // The next page token.
   string next_page_token = 2;
 }
 
 // GetStepDocumentationRequest
-message GetStepDocumentationRequest {
+message GetStepTemplateDocumentationRequest {
   // Type of pipeline to fetch step for.
   Type type = 1;
 
   // Type of step to fetch.
   StepType step_type = 2;
 
-  // Identifier for step.
+  // Identifier for step template.
   string identifier = 3;
 }
 
 // GetStepDocumentationResponse
-message GetStepDocumentationResponse {
-  // Type of the pipeline.
-  Type type = 1;
-
-  // Type of the step.
-  StepType step_type = 2;
-
-  // Step information.
-  Step step = 3;
+message GetStepTemplateDocumentationResponse {
+  Step step_template = 1;
 }
