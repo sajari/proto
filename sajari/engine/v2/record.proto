@@ -18,7 +18,7 @@ service Store {
   rpc MutateRecord (MutateRecordRequest) returns (MutateRecordResponse);
 }
 
-// Value is a repesentation data of columnular data for a record.
+// Value is the representation for record field values.
 message Value {
   // Repeated values
   message Repeated {
@@ -82,8 +82,8 @@ message MutateRecordRequest {
          // Set overrides the current value with the value in set.
          Value set = 2;
 
-         // Increment takes the current value and incremenets it using the
-         // numerical representation of incremenet.  Can only be used on numeric
+         // Increment takes the current value and increments it using the
+         // numerical representation of increment.  Can only be used on numeric
          // fields.
          //
          // Not yet implemented.

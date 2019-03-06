@@ -36,7 +36,7 @@ message CreateFieldRequest {
   Field field = 1;
 }
 
-// Field defines the properties of of a field in the schema.
+// Field defines the properties of a field in the schema.
 message Field {
   // Name of the field.
   string name = 1;
@@ -124,7 +124,6 @@ message MutateFieldRequest {
     }
   }
 
-  // List of mutations to apply to the field.  Each is taken individually, if there
-  // are any errors then the rest are ignored.
+  // Mutation to apply to the field.
   Mutation mutation = 2;
 }

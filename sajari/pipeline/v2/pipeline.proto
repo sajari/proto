@@ -16,7 +16,7 @@ enum Type {
   RECORD_PIPELINE = 2;
 }
 
-// Type of steps.
+// Type of step.
 enum StepType {
   // Unspecified.
   STEP_TYPE_UNSPECIFIED = 0;
