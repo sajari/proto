@@ -41,14 +41,20 @@ message GetPipelineResponse {
   // Identifier for pipeline.
   TypeIdentifier pipeline = 1;
 
+  // Title of the pipeline.
+  string Title = 2;
+
+  // Description of the pipeline.
+  string Description = 3;
+
   // List of steps that the pipeline will run.
-  repeated StepConfig pre_steps = 2;
+  repeated StepConfig pre_steps = 4;
 
   // List of steps that will be run after the action has been performed.
-  repeated StepConfig post_steps = 3;
+  repeated StepConfig post_steps = 5;
 
   // Time when the pipeline was created.
-  google.protobuf.Timestamp create_time = 4;
+  google.protobuf.Timestamp create_time = 6;
 }
 
 message SetDefaultPipelineRequest {

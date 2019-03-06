@@ -19,9 +19,7 @@ service Documentation {
 }
 
 message GetPipelineDocumentationRequest {
-  Type type = 1;
-
-  Identifier pipeline = 2;
+  TypeIdentifier pipeline = 1;
 }
 
 // Usage is a message containing usage information for a query pipeline.
@@ -29,18 +27,24 @@ message GetPipelineDocumentationResponse {
   // Identifier for pipeline.
   TypeIdentifier pipeline = 1;
 
+  // Title.
+  string title = 2;
+
+  // Description.
+  string description = 3;
+
   // Steps is the list of steps that will be run for the pipeline.
-  repeated Step pre_steps = 2;
+  repeated Step pre_steps = 4;
 
   // Steps is the list of steps that will be run after the record
   // has been applied to the engine.
-  repeated Step post_steps = 3;
+  repeated Step post_steps = 5;
 
   // List of input parameters used in the pipeline.
-  repeated Parameter inputs = 4;
+  repeated Parameter inputs = 6;
 
   // List of output parameters returned by the pipeline.
-  repeated Parameter outputs = 5;
+  repeated Parameter outputs = 7;
 }
 
 // Parameter defines a parameter used in pipelines to pass
