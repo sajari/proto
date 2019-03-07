@@ -52,59 +52,58 @@ message GetPipelineDocumentationResponse {
   google.protobuf.Timestamp create_time = 8;
 }
 
-// Parameter defines a parameter used in pipelines to pass
-// user-defined values.
+// Parameter defines a parameter used in pipelines to pass user-defined values.
+// It can be configured by the pipeline creater.
 message Parameter {
-  // Identifier for this parameter.
+  // Identifier for this parameter (from the step template).
   string identifier = 1;
 
-  // Name of the pipeline parameter.
+  // Name of the parameter in this pipeline.
   string name = 2;
 
-  // Type of the pipeline parameter.
+  // Type of the pipeline parameter (from the step template).
   string type = 3;
 
-  // Description for the paramter.
+  // Description for the paramter in this pipeline.
   string description = 4;
 
-  // Default value of the parameter.
+  // Default value of the parameter in this pipeline.
   string default_value = 5;
 }
 
-// Constant defines a constant used in a pipeline step, set by
+// Constant defines a constant used in a pipeline step. The value can be set by
 // the pipeline creator but cannot be changed by the caller.
 message Constant {
-  // Identifier for the constant.
-  string identifier = 1;
+  // Name of the constant (from the step template).
+  string name = 1;
 
-  // Name of the constant.
-  string name = 2;
+  // Type of the constant (from the step template).
+  string type = 2;
 
-  // Type of the constant.
-  string type = 3;
+  // Description informtion for the constant (from the step template).
+  string description = 3;
 
-  // Description informtion for the constant.
-  string description = 4;
-
-  // Value of the constant.
-  string value = 5;
+  // Value of the constant in this pipeline.
+  string value = 4;
 }
 
-// Step represents a single unit of work performed by the pipeline.
+// Step represents a single unit of work performed by a pipeline.  Every pipeline
+// step is based on a StepTemplate defined by the system. Pipeline creators
+// override template values to customise the step to their needs.
 message Step {
-  // Type of pipeline this step applies to.
+  // Type of pipeline this step applies to (from the step template).
   Type type = 1;
 
-  // Type of step.
+  // Type of step (from the step template).
   StepType step_type = 2;
 
-  // Identifier.
+  // Identifier of this step (from the step template).
   string identifier = 3;
 
-  // Title of the step.
+  // Title of step in this pipeline.
   string title = 4;
 
-  // Description of the step.
+  // Description of the step in this pipeline.
   string description = 5;
 
   // List of input parameters used by the step.
