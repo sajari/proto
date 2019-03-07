@@ -20,7 +20,7 @@ service PipelineAdmin {
   rpc GetPipeline(GetPipelineRequest) returns (GetPipelineResponse);
 
   // Set the default version of the pipeline.
-  rpc SetDefaultPipeline(SetDefaultPipelineRequest) returns (GetDefaultPipelineResponse);
+  rpc SetDefaultPipeline(SetDefaultPipelineRequest) returns (SetDefaultPipelineResponse);
 
   // Get the default version of the pipeline.
   rpc GetDefaultPipeline(GetDefaultPipelineRequest) returns (GetDefaultPipelineResponse);
@@ -38,23 +38,7 @@ message GetPipelineRequest {
 }
 
 message GetPipelineResponse {
-  // Identifier for pipeline.
-  TypeIdentifier pipeline = 1;
-
-  // Title of the pipeline.
-  string Title = 2;
-
-  // Description of the pipeline.
-  string Description = 3;
-
-  // List of steps that the pipeline will run.
-  repeated StepConfig pre_steps = 4;
-
-  // List of steps that will be run after the action has been performed.
-  repeated StepConfig post_steps = 5;
-
-  // Time when the pipeline was created.
-  google.protobuf.Timestamp create_time = 6;
+  Pipeline pipeline = 1;
 }
 
 message SetDefaultPipelineRequest {
@@ -91,7 +75,7 @@ message ListPipelinesRequest {
 
 message ListPipelinesResponse {
   // The pipelines found.
-  repeated TypeIdentifier pipelines = 1;
+  repeated Pipeline pipelines = 1;
 
   // The next page token.
   string next_page_token = 2;
@@ -99,20 +83,33 @@ message ListPipelinesResponse {
 
 // Create a pipeline.
 message CreatePipelineRequest {
+  Pipeline pipeline = 1;
+}
+
+message Pipeline {
   // Identifier for pipeline.
   TypeIdentifier pipeline = 1;
 
   // Title of the pipeline.
-  string title = 3;
+  string Title = 2;
 
   // Description of the pipeline.
-  string description = 4;
+  string Description = 3;
 
-  // List of steps that the pipeline will run.
-  repeated StepConfig pre_steps = 5;
+  // Step configurations.
+  repeated StepConfigs steps = 4;
 
-  // List of steps that will be run after the action has been performed.
-  repeated StepConfig post_steps = 6;
+  // Output only. Time when the pipeline was created.
+  google.protobuf.Timestamp create_time = 6;
+}
+
+// StepConfigs wraps the step types into a list.
+message StepConfigs {
+  // Type of step run.
+  StepType step_type = 1;
+
+  // List of steps.
+  repeated StepConfig steps = 2;
 }
 
 // StepConfig creates a pipeline step.

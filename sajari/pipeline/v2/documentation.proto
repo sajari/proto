@@ -4,6 +4,8 @@ package sajari.pipeline.v2;
 
 import "sajari/pipeline/v2/pipeline.proto";
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "code.sajari.com/protogen-go/sajari/pipeline/v2;pipelinepb";
 
 // Documentation provides information on steps and pipelines.
@@ -45,6 +47,9 @@ message GetPipelineDocumentationResponse {
 
   // List of output parameters returned by the pipeline.
   repeated Parameter outputs = 7;
+
+  // Time that the pipeline was created.
+  google.protobuf.Timestamp create_time = 8;
 }
 
 // Parameter defines a parameter used in pipelines to pass
