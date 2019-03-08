@@ -35,21 +35,25 @@ message GetPipelineDocumentationResponse {
   // Description.
   string description = 3;
 
-  // Steps is the list of steps that will be run for the pipeline.
-  repeated Step pre_steps = 4;
-
-  // Steps is the list of steps that will be run after the record
-  // has been applied to the engine.
-  repeated Step post_steps = 5;
+  // Steps that will be run.
+  repeated Steps steps = 4;
 
   // List of input parameters used in the pipeline.
-  repeated Parameter inputs = 6;
+  repeated Parameter inputs = 5;
 
   // List of output parameters returned by the pipeline.
-  repeated Parameter outputs = 7;
+  repeated Parameter outputs = 6;
 
   // Time that the pipeline was created.
-  google.protobuf.Timestamp create_time = 8;
+  google.protobuf.Timestamp create_time = 7;
+}
+
+message Steps {
+  // Step type determines when the steps will be run.
+  StepType step_type = 1;
+
+  // List of steps to run.
+  repeated Step steps = 2;
 }
 
 // Parameter defines a parameter used in pipelines to pass user-defined values.

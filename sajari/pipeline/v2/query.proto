@@ -149,9 +149,9 @@ message QueryResults {
   map<string, sajari.engine.v2.QueryAggregateResult> aggregates = 4;
 
   // Aggregates run with filters.
-  map<string, sajari.engine.v2.QueryAggregateResult> aggregate_filters = 6;
+  map<string, sajari.engine.v2.QueryAggregateResult> aggregate_filters = 5;
 
   // Results returned by query.
-  repeated sajari.engine.v2.QueryResult results = 5;
+  repeated sajari.engine.v2.QueryResult results = 6;
 }
 

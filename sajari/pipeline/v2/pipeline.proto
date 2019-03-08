@@ -47,5 +47,5 @@ message Identifier {
   string name = 1;
 
   // Version is the unique identifier.
-  string version = 3;
+  string version = 2;
 }
