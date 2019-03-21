@@ -99,7 +99,7 @@ message Step {
   Type type = 1;
 
   // Type of step (from the step template).
-  StepType step_type = 2;
+  repeated StepType step_types = 2;
 
   // Identifier of this step (from the step template).
   string identifier = 3;
@@ -137,24 +137,6 @@ message ListStepTemplatesRequest {
 
 // ListStepsResponse contains a list of steps.
 message ListStepTemplatesResponse {
-  // Step template
-  message StepTemplate {
-    // Type of pipeline this step refers to.
-    Type type = 1;
-
-    // Type of step (pre/post).
-    StepType step_type = 2;
-
-    // Identifer for step.
-    string identifier = 3;
-
-    // Title of step.
-    string title = 4;
-
-    // Description of step.
-    string description = 5;
-  }
-
   // List of steps.
   repeated Step step_templates = 1;
 
@@ -167,11 +149,8 @@ message GetStepTemplateDocumentationRequest {
   // Type of pipeline to fetch step for.
   Type type = 1;
 
-  // Type of step to fetch.
-  StepType step_type = 2;
-
   // Identifier for step template.
-  string identifier = 3;
+  string identifier = 2;
 }
 
 // GetStepDocumentationResponse
