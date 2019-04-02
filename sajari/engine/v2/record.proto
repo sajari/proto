@@ -14,6 +14,9 @@ service Store {
 
   // MutateRecord applies mutations to a record.
   rpc MutateRecord (MutateRecordRequest) returns (MutateRecordResponse);
+
+  // ListKeys lists keys corresponding to each record in the collection.
+  rpc ListKeys (ListKeysRequest) returns (ListKeysResponse);
 }
 
 // Value is the representation for record field values.
@@ -100,3 +103,22 @@ message MutateRecordRequest {
 }
 
 message MutateRecordResponse {}
+
+message ListKeysRequest {
+  // Unique field to list keys from.
+  string field = 1;
+
+  // Maximum number of keys to return.
+  int32 page_size = 2;
+
+  // The `next_page_token` value returned from a previous List request, if any.
+  string page_token = 3;
+}
+
+message ListKeysResponse {
+  // Keys of records found.
+  repeated Key keys = 1;
+
+  // The next page token.
+  string next_page_token = 2;
+}
