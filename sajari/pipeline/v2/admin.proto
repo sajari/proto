@@ -63,7 +63,7 @@ message GetDefaultPipelineResponse {
 }
 
 message ListPipelinesRequest {
-  // Identifier for pipeline.
+  // Identifier query for pipeline. Name and Version can be blank.
   TypeIdentifier pipeline = 1;
 
   // The maximum number of pipelines to return.
