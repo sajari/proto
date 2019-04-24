@@ -155,6 +155,9 @@ message StepConfig {
 
   // Identifier -> changes to apply
   map<string, ConstantConfigs> constant_configs = 5;
+
+  // Condition expression to determine if this step should be run.
+  string condition = 6;
 }
 
 message CreatePipelineResponse {}
