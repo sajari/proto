@@ -91,10 +91,10 @@ message Pipeline {
   TypeIdentifier pipeline = 1;
 
   // Title of the pipeline.
-  string Title = 2;
+  string title = 2;
 
   // Description of the pipeline.
-  string Description = 3;
+  string description = 3;
 
   // Step configurations.
   repeated StepConfigs steps = 4;
