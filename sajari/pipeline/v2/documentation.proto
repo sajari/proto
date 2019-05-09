@@ -118,6 +118,9 @@ message Step {
 
   // List of constants used by the step.
   repeated Constant constants = 8;
+
+  // Condition that must pass for the step to be run.
+  string Condition = 9;
 }
 
 // ListStepTemplatesRequest is used to request a listing of step templates.
