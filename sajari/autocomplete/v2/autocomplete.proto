@@ -1,0 +1,194 @@
+syntax = "proto3";
+
+package sajari.autocomplete.v2;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "code.sajari.com/protogen-go/sajari/autocomplete/v2;autocompletepb";
+
+// Control defines methods for creating and deleting autocomplete models.
+service Admin {
+  // Create a new autocomplete model.
+  rpc CreateModel (CreateModelRequest) returns (CreateModelResponse);
+  // Delete an existing model.
+  rpc DeleteModel (DeleteModelRequest) returns (google.protobuf.Empty);
+}
+
+// Query defines methods for quering an autocomplete model.
+service Query {
+  // Autocomplete a phrase. Potentially also fix spelling mistakes.
+  rpc AutoComplete (AutoCompleteRequest) returns (AutoCompleteResponse);
+}
+
+// Train defines methods for training autocomplete models.
+service Train {
+  // Add words to the model to assist in detecting spelling mistakes.
+  rpc AddCorpus (AddCorpusRequest) returns (google.protobuf.Empty);
+  // Gets the frequency for a word.
+  rpc GetWordFrequency (GetWordFrequencyRequest) returns (GetWordFrequencyResponse);
+  // Gets the frequency for an n-gram.
+  rpc GetNgramFrequency(GetNgramFrequencyRequest) returns (GetNgramFrequencyResponse);
+  // Set the freqency for a word.
+  rpc SetWordFrequency(SetWordFrequencyRequest) returns (google.protobuf.Empty);
+  // Set the frequency for an n-gram.
+  rpc SetNgramFrequency(SetNgramFrequencyRequest) returns (google.protobuf.Empty);
+
+  // Add a query to the model to assist with query popularity prediction.
+  rpc AddQuery(AddQueryRequest) returns (google.protobuf.Empty);
+  // Gets the frequency of a query.
+  rpc GetQueryFrequency(GetQueryFrequencyRequest) returns (GetQueryFrequencyResponse);
+  // Set the frequency for a query.
+  rpc SetQueryFrequency(SetQueryFrequencyRequest) returns (google.protobuf.Empty);
+}
+
+// Model is an autocomplete model.
+message Model {
+  // Name of the model.
+  string name = 1;
+}
+
+// Frequency for a word, n-gram or query.
+message Frequency {
+  // The source
+  string label = 1;
+  // Number of times counted for a label.
+  int64 count = 2;
+}
+
+// CreateModelRequest contains details of the model to create.
+message CreateModelRequest {
+   // Model to create.
+   Model model = 1;
+}
+
+// CreateModelResponse contains model that was created.
+message CreateModelResponse {
+  // Model that was created.
+  Model model = 1;
+}
+
+message DeleteModelRequest {
+  // Model to delete.
+  Model model = 1;
+}
+
+// AddCorpusRequest contains words to add to the model to assist with
+// detecting detecting spelling mistakes.
+message AddCorpusRequest {
+  // Model to train.
+  Model model = 1;
+  // Source of the terms.
+  string label = 2;
+  // The words to train the corpus with. These should be correctly
+  // spelt to avoid autocorrecting to misspellings.
+  repeated string words = 3;
+}
+
+// GetWordFrequencyRequest contains the word to retrieve the frequency for
+message GetWordFrequencyRequest {
+  // Model to use
+  Model model = 1;
+  // The terms to retrieve the frequency for
+  string word = 2;
+}
+
+// GetWordFrequencyResponse contains the frequency for a word.
+message GetWordFrequencyResponse {
+   // Frequency for each label for a given word
+  repeated Frequency frequencies = 1;
+}
+
+// SetWordFrequencyRequest sets the frequency for a word.
+message SetWordFrequencyRequest {
+  // Model to use.
+  Model model = 1;
+  // Source of the word.
+  string label = 2;
+  // Word to set.
+  string word = 3;
+  // Number of times the word is counted.
+  int64 count = 4;
+}
+
+// GetNgramFrequencyRequest contains the n-gram to get the frequency for.
+message GetNgramFrequencyRequest {
+  // Model to use.
+  Model model = 1;
+  // The word to retrieve the frequency for.
+  string word = 2;
+}
+
+// GetNgramFrequencyResponse contains the frequency for an n-gram.
+message GetNgramFrequencyResponse {
+   // frequency for each label for a given n-gram.
+  repeated Frequency frequencies = 1;
+}
+
+// SetNgramFrequencyRequest sets the frequency for a n-gram.
+message SetNgramFrequencyRequest {
+   // Model to use.
+   Model model = 1;
+   // Source of the word.
+   string label = 2;
+   // Word to set.
+   string word = 3;
+   // Number of times the word is counted.
+   int64 count = 4;
+}
+
+// AddQueryRequest to assist with query popularity prediction.
+message AddQueryRequest {
+  // Model to add query to.
+  Model model = 1;
+  // the source of the query.
+  string label = 2;
+  // The query is broken into terms. Typically this would use spaces
+  // as delimiters, but it is not restricted to spaces for language flexibility.
+  repeated string query = 3;
+}
+
+// GetNgramFrequencyRequest contains the query to get the frequency for.
+message GetQueryFrequencyRequest {
+   // Model to use.
+   Model model = 1;
+   // Query to retrieve the frequency for.
+   repeated string query = 2;
+}
+
+// GetQueryFrequencyResponse contains the frequency for a query.
+message GetQueryFrequencyResponse {
+  // Frequency for each label for a given query.
+  repeated Frequency frequencies = 1;
+}
+
+// SetQueryFrequencyResponse sets the frequency for a query.
+message SetQueryFrequencyRequest {
+  // Model to use.
+  Model model = 1;
+  // Source of the query.
+  string label = 2;
+  // Query to set.
+  repeated string query = 3;
+  // Number of times the query is counted for a given label.
+  int64 count = 4;
+}
+
+// AutoCompleteRequest is a query to be autocompleted.
+message AutoCompleteRequest {
+  // Model to train.
+  Model model = 1;
+
+  // The phrase to be autocompleted.
+  string phrase = 2;
+
+  // The query phrase broken into terms. Typically this would use spaces.
+  // as delimiters, but it is not restricted to spaces for language flexibility.
+  repeated string terms = 3;
+}
+
+// AutoCompleteResponse is an ordered list of autocompleted phrases in response
+// to an AutoCompleteRequest.
+message AutoCompleteResponse {
+  // Potential autocompletes in order of most likely to least likely.
+  repeated string phrases = 1;
+}
