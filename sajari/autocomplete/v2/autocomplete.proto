@@ -18,6 +18,9 @@ service Admin {
 service Query {
   // Autocomplete a phrase. Potentially also fix spelling mistakes.
   rpc AutoComplete (AutoCompleteRequest) returns (AutoCompleteResponse);
+
+  // SuggestSpellings for a list of words.
+  rpc SuggestSpellings (SuggestSpellingsRequest) returns (SuggestSpellingsResponse);
 }
 
 // Train defines methods for training autocomplete models.
@@ -191,4 +194,23 @@ message AutoCompleteRequest {
 message AutoCompleteResponse {
   // Potential autocompletes in order of most likely to least likely.
   repeated string phrases = 1;
+}
+
+message SuggestSpellingsRequest {
+  Model model = 1;
+
+  // List of words to correct (in context).
+  repeated string words = 2;
+}
+
+message SuggestSpellingsResponse {
+  message Suggestion {
+    // Words is a list of suggested words.
+    repeated string words = 1;
+    // Weights for the words.
+    repeated double weights = 2;
+    // Weight foer the overall suggestion.
+    double weight = 3;
+  }
+  repeated Suggestion suggestions = 1;
 }
