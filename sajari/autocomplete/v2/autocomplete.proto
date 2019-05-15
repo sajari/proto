@@ -37,7 +37,7 @@ service Train {
   rpc SetNgramFrequency(SetNgramFrequencyRequest) returns (google.protobuf.Empty);
 
   // Add a query to the model to assist with query popularity prediction.
-  rpc AddQuery(AddQueryRequest) returns (google.protobuf.Empty);
+  rpc AddQueryFrequency(AddQueryFrequencyRequest) returns (google.protobuf.Empty);
   // Gets the frequency of a query.
   rpc GetQueryFrequency(GetQueryFrequencyRequest) returns (GetQueryFrequencyResponse);
   // Set the frequency for a query.
@@ -140,7 +140,7 @@ message SetNgramFrequencyRequest {
 }
 
 // AddQueryRequest to assist with query popularity prediction.
-message AddQueryRequest {
+message AddQueryFrequencyRequest {
   // Model to add query to.
   Model model = 1;
   // the source of the query.
@@ -148,6 +148,8 @@ message AddQueryRequest {
   // The query is broken into terms. Typically this would use spaces
   // as delimiters, but it is not restricted to spaces for language flexibility.
   repeated string query = 3;
+  // Number of times too add to the query count for the given label.
+  int64 count = 4;
 }
 
 // GetNgramFrequencyRequest contains the query to get the frequency for.
