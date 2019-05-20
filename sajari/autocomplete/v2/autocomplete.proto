@@ -30,18 +30,18 @@ service Train {
   // Gets the frequency for a word.
   rpc GetWordFrequency (GetWordFrequencyRequest) returns (GetWordFrequencyResponse);
   // Gets the frequency for an n-gram.
-  rpc GetNgramFrequency(GetNgramFrequencyRequest) returns (GetNgramFrequencyResponse);
+  rpc GetNgramFrequency (GetNgramFrequencyRequest) returns (GetNgramFrequencyResponse);
   // Set the freqency for a word.
-  rpc SetWordFrequency(SetWordFrequencyRequest) returns (google.protobuf.Empty);
+  rpc SetWordFrequency (SetWordFrequencyRequest) returns (google.protobuf.Empty);
   // Set the frequency for an n-gram.
-  rpc SetNgramFrequency(SetNgramFrequencyRequest) returns (google.protobuf.Empty);
+  rpc SetNgramFrequency (SetNgramFrequencyRequest) returns (google.protobuf.Empty);
 
   // Add a query to the model to assist with query popularity prediction.
-  rpc AddQueryFrequency(AddQueryFrequencyRequest) returns (google.protobuf.Empty);
+  rpc AddQueryFrequency (AddQueryFrequencyRequest) returns (google.protobuf.Empty);
   // Gets the frequency of a query.
-  rpc GetQueryFrequency(GetQueryFrequencyRequest) returns (GetQueryFrequencyResponse);
+  rpc GetQueryFrequency (GetQueryFrequencyRequest) returns (GetQueryFrequencyResponse);
   // Set the frequency for a query.
-  rpc SetQueryFrequency(SetQueryFrequencyRequest) returns (google.protobuf.Empty);
+  rpc SetQueryFrequency (SetQueryFrequencyRequest) returns (google.protobuf.Empty);
 }
 
 // Model is an autocomplete model.
