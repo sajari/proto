@@ -183,19 +183,22 @@ message AutoCompleteRequest {
   // Model to train.
   Model model = 1;
 
-  // The phrase to be autocompleted.
-  string phrase = 2;
-
-  // The query phrase broken into terms. Typically this would use spaces.
-  // as delimiters, but it is not restricted to spaces for language flexibility.
-  repeated string terms = 3;
+  // Words representing the input to complete.
+  repeated string words = 3;
 }
 
 // AutoCompleteResponse is an ordered list of autocompleted phrases in response
 // to an AutoCompleteRequest.
 message AutoCompleteResponse {
+  message Suggestion {
+    // Words representing the suggestion.
+    repeated string words = 1;
+    // Weight of the suggestion.
+    double weight = 2;
+  }
+
   // Potential autocompletes in order of most likely to least likely.
-  repeated string phrases = 1;
+  repeated Suggestion suggestions = 1;
 }
 
 message SuggestSpellingsRequest {
