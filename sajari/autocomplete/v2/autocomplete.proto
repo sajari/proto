@@ -209,13 +209,23 @@ message SuggestSpellingsRequest {
 }
 
 message SuggestSpellingsResponse {
-  message Suggestion {
-    // Words is a list of suggested words.
-    repeated string words = 1;
-    // Weights for the words.
-    repeated double weights = 2;
-    // Weight foer the overall suggestion.
-    double weight = 3;
+  message WordSuggestions {
+    message WordScore {
+      string word = 1;
+      double score = 2;
+    }
+    repeated WordScore word_scores = 1;
   }
-  repeated Suggestion suggestions = 1;
+
+  message PhraseSuggestion {
+    repeated string words = 1;
+    double score = 2;
+  }
+
+  // Spelling suggestions for the words.
+  repeated WordSuggestions word_suggestions = 1;
+
+  // Context-based suggestions for the words
+  // formed into phrases.
+  repeated PhraseSuggestion phrase_suggestions = 2;
 }
