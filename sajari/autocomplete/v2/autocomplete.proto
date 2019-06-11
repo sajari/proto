@@ -27,19 +27,11 @@ service Query {
 service Train {
   // Add words to the model to assist in detecting spelling mistakes.
   rpc AddCorpus (AddCorpusRequest) returns (google.protobuf.Empty);
-  // Gets the frequency for a word.
-  rpc GetWordFrequency (GetWordFrequencyRequest) returns (GetWordFrequencyResponse);
-  // Gets the frequency for an n-gram.
-  rpc GetNgramFrequency (GetNgramFrequencyRequest) returns (GetNgramFrequencyResponse);
-  // Set the freqency for a word.
-  rpc SetWordFrequency (SetWordFrequencyRequest) returns (google.protobuf.Empty);
-  // Set the frequency for an n-gram.
-  rpc SetNgramFrequency (SetNgramFrequencyRequest) returns (google.protobuf.Empty);
+  // Set frequency for words in the model.
+  rpc SetCorpus (SetCorpusRequest) returns (google.protobuf.Empty);
 
   // Add a query to the model to assist with query popularity prediction.
   rpc AddQueryFrequency (AddQueryFrequencyRequest) returns (google.protobuf.Empty);
-  // Gets the frequency of a query.
-  rpc GetQueryFrequency (GetQueryFrequencyRequest) returns (GetQueryFrequencyResponse);
   // Set the frequency for a query.
   rpc SetQueryFrequency (SetQueryFrequencyRequest) returns (google.protobuf.Empty);
 }
@@ -87,56 +79,16 @@ message AddCorpusRequest {
   repeated string words = 3;
 }
 
-// GetWordFrequencyRequest contains the word to retrieve the frequency for
-message GetWordFrequencyRequest {
-  // Model to use
+// SetCorpusRequest contains words to set in the model.
+message SetCorpusRequest {
+  // Model to train.
   Model model = 1;
-  // The terms to retrieve the frequency for
-  string word = 2;
-}
-
-// GetWordFrequencyResponse contains the frequency for a word.
-message GetWordFrequencyResponse {
-   // Frequency for each label for a given word
-  repeated Frequency frequencies = 1;
-}
-
-// SetWordFrequencyRequest sets the frequency for a word.
-message SetWordFrequencyRequest {
-  // Model to use.
-  Model model = 1;
-  // Source of the word.
+  // Source of the terms.
   string label = 2;
-  // Word to set.
-  string word = 3;
-  // Number of times the word is counted.
-  int64 count = 4;
-}
-
-// GetNgramFrequencyRequest contains the n-gram to get the frequency for.
-message GetNgramFrequencyRequest {
-  // Model to use.
-  Model model = 1;
-  // The word to retrieve the frequency for.
-  string word = 2;
-}
-
-// GetNgramFrequencyResponse contains the frequency for an n-gram.
-message GetNgramFrequencyResponse {
-   // frequency for each label for a given n-gram.
-  repeated Frequency frequencies = 1;
-}
-
-// SetNgramFrequencyRequest sets the frequency for a n-gram.
-message SetNgramFrequencyRequest {
-   // Model to use.
-   Model model = 1;
-   // Source of the word.
-   string label = 2;
-   // Word to set.
-   string word = 3;
-   // Number of times the word is counted.
-   int64 count = 4;
+  // The words to train the corpus with.
+  repeated string words = 3;
+  // If true, the words will be as is and not expanded into unigrams,bigrams and trigrams.
+  bool flat = 4;
 }
 
 // AddQueryRequest to assist with query popularity prediction.
@@ -150,20 +102,6 @@ message AddQueryFrequencyRequest {
   repeated string query = 3;
   // Number of times too add to the query count for the given label.
   int64 count = 4;
-}
-
-// GetNgramFrequencyRequest contains the query to get the frequency for.
-message GetQueryFrequencyRequest {
-   // Model to use.
-   Model model = 1;
-   // Query to retrieve the frequency for.
-   repeated string query = 2;
-}
-
-// GetQueryFrequencyResponse contains the frequency for a query.
-message GetQueryFrequencyResponse {
-  // Frequency for each label for a given query.
-  repeated Frequency frequencies = 1;
 }
 
 // SetQueryFrequencyResponse sets the frequency for a query.
@@ -184,7 +122,18 @@ message AutoCompleteRequest {
   Model model = 1;
 
   // Words representing the input to complete.
-  repeated string words = 3;
+  repeated string words = 2;
+
+  // The configuration options for spelling suggestions.
+  repeated AutoCompleteOption options = 3;
+
+  // The options used for spelling suggestions.
+  message AutoCompleteOption {
+    oneof opt {
+      // Used to determine whether process the autocomplete request.
+      SkipOption skip_option = 1;
+    }
+  }
 }
 
 // AutoCompleteResponse is an ordered list of autocompleted phrases in response
@@ -202,10 +151,98 @@ message AutoCompleteResponse {
 }
 
 message SuggestSpellingsRequest {
+  // Model to use.
   Model model = 1;
 
   // List of words to correct (in context).
   repeated string words = 2;
+
+  // The configuration options for spelling suggestions.
+  repeated SuggestOption options = 3;
+
+  // The options used for spelling suggestions.
+  message SuggestOption {
+    oneof opt {
+      // Sets the the maximum number of word suggestions returned to this value.
+      int32 word_limit = 1;
+
+      // Used to evaluate suggestions.
+      ScoreOption score_option = 2;
+
+      // Used to determine whether to evaluate suggestions.
+      SkipOption skip_option = 3;
+    }
+  }
+
+  // Score options which boost the score of a suggestion.
+  message ScoreOption {
+    // Checks for an adjacent swap which would otherwise register
+    // as distance 2 (standard Leveshtein), updating them to distance 1.
+    message AdjacentSwap {
+    }
+
+    // ConsecutiveRepeat looks for mistakes due to repeated letters (i.e.
+    // where the input has a single letter that should be double, or vice
+    // versa).
+    message ConsecutiveRepeat {
+      // scores contains the score to add for distance 0, 1, 2 and so on.
+      repeated double scores = 1;
+    }
+
+    // FullPrefix returns a score if the suggestion is contained in the prefix of word.
+    message FullPrefix {
+      // scores contains the score to add for edit distance 0, 1, 2.
+      repeated double scores = 1;
+    }
+
+    // FullSuffix returns a score if the suggestion is contained in the suffix of the word.
+    message FullSuffix {
+      // scores contains the score to add for edit distance 0, 1, 2.
+      repeated double scores = 1;
+    }
+
+    // Levenshtein configures the score attributed to different edit distances.
+    message Levenshtein {
+      // scores contains the score to add for edit distance 0, 1, 2.
+      repeated double scores = 1;
+    }
+
+    // LimitDistance bounds the allowed edit distance based on the size of the input word.
+    message LimitDistance {
+      // Maximum length of the suggestion suggested word.
+      int32 max_word_size = 1;
+      // Maximum edit distance the suggested word can have.
+      int32 max_distance = 2;
+    }
+
+    // Prefix adds scoring to suggestions if they match prefixes.
+    message Prefix {
+      // scores to add for each prefix character that matches with the suggestion.
+      repeated double scores = 1;
+    }
+
+    // VowelSwap returns score if a difference is a vowel swap.
+    message VowelSwap {
+      // score is the score to add to the suggestion.
+      double score = 1;
+    }
+
+    // Clears all default score options.
+    message Clear {
+    }
+
+    oneof score_option {
+      AdjacentSwap adjacent_swap = 1;
+      ConsecutiveRepeat consecutive_repeat = 2;
+      FullPrefix full_prefix = 3;
+      FullSuffix full_suffix = 4;
+      Levenshtein levenshtein = 5;
+      LimitDistance limit_distance = 6;
+      Prefix prefix = 7;
+      VowelSwap vowel_swap = 8;
+      Clear clear = 9;
+    }
+  }
 }
 
 message SuggestSpellingsResponse {
@@ -228,4 +265,17 @@ message SuggestSpellingsResponse {
   // Context-based suggestions for the words
   // formed into phrases.
   repeated PhraseSuggestion phrase_suggestions = 2;
+}
+
+// Determines whether the request should be porcessed.
+message SkipOption {
+  // Skip evaluation based on the ngrams located within a label.
+  message SkipLabel {
+    // Source of the words.
+    string label = 1;
+  }
+
+  oneof skip_option {
+      SkipLabel skip_label = 1;
+  }
 }
