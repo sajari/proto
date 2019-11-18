@@ -54,7 +54,12 @@ message Record {
 
 // GetRequest.
 message GetRecordRequest {
+  // Key of the record to retrieve.
    Key key = 1;
+
+   // Fields to return.  Only fields that have been set on the record will be returned.
+   // Defaults to all fields.
+   repeated string fields = 2;
 }
 
 // GetResponse is returned from Get.
