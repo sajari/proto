@@ -121,6 +121,9 @@ message Step {
 
   // Condition that must pass for the step to be run.
   string condition = 9;
+
+  // Annotations added to the request when the step is run.
+  repeated string annotations = 10;
 }
 
 // ListStepTemplatesRequest is used to request a listing of step templates.

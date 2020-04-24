@@ -158,6 +158,9 @@ message StepConfig {
 
   // Condition expression to determine if this step should be run.
   string condition = 6;
+
+  // Annotations added to the request when the step is run.
+  repeated string annotations = 7;
 }
 
 message CreatePipelineResponse {}
