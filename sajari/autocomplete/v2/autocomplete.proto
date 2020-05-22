@@ -77,6 +77,16 @@ message AddCorpusRequest {
   // The words to train the corpus with. These should be correctly
   // spelt to avoid autocorrecting to misspellings.
   repeated string words = 3;
+  // The training options.
+  repeated AddCorpusOption options = 4;
+
+  // The options used for add corpus.
+  message AddCorpusOption {
+    oneof opt {
+      // Only unigrams will be recorded for the words.
+      bool only_unigrams = 1;
+    }
+  }
 }
 
 // SetCorpusRequest contains words to set in the model.
@@ -102,6 +112,16 @@ message AddQueryFrequencyRequest {
   repeated string query = 3;
   // Number of times too add to the query count for the given label.
   int64 count = 4;
+  // The training options.
+  repeated AddQueryOption options = 5;
+
+  // The options used for adding queries.
+  message AddQueryOption {
+    oneof opt {
+      // each word in the query must exist.
+      bool words_must_exist = 1;
+    }
+  }
 }
 
 // SetQueryFrequencyResponse sets the frequency for a query.
