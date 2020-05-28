@@ -110,7 +110,7 @@ message AddQueryFrequencyRequest {
   // The query is broken into terms. Typically this would use spaces
   // as delimiters, but it is not restricted to spaces for language flexibility.
   repeated string query = 3;
-  // Number of times too add to the query count for the given label.
+  // Number of times to add to the query count for the given label.
   int64 count = 4;
   // The training options.
   repeated AddQueryOption options = 5;
@@ -185,13 +185,21 @@ message SuggestSpellingsRequest {
     oneof opt {
       // Sets the the maximum number of word suggestions returned to this value.
       int32 word_limit = 1;
-
       // Used to evaluate suggestions.
       ScoreOption score_option = 2;
-
       // Used to determine whether to evaluate suggestions.
       SkipOption skip_option = 3;
+      // Influences a word suggestion score.
+      LabelScorer word_scorer = 4;
+      // Influences a phrase suggestion score.
+      LabelScorer phrase_scorer = 5;
     }
+  }
+
+  // Allows a score to be weighted according to label.
+  message LabelScorer {
+    // Mapping of label to weight.
+    map<string, double> weights = 1;
   }
 
   // Score options which boost the score of a suggestion.
