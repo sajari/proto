@@ -147,11 +147,13 @@ message AutoCompleteRequest {
   // The configuration options for spelling suggestions.
   repeated AutoCompleteOption options = 3;
 
-  // The options used for spelling suggestions.
+  // The options used for autocomplete
   message AutoCompleteOption {
     oneof opt {
       // Used to determine whether process the autocomplete request.
       SkipOption skip_option = 1;
+      // Influences the score of a completion.
+      LabelScorer scorer = 2;
     }
   }
 }
@@ -194,12 +196,6 @@ message SuggestSpellingsRequest {
       // Influences a phrase suggestion score.
       LabelScorer phrase_scorer = 5;
     }
-  }
-
-  // Allows a score to be weighted according to label.
-  message LabelScorer {
-    // Mapping of label to weight.
-    map<string, double> weights = 1;
   }
 
   // Score options which boost the score of a suggestion.
@@ -294,6 +290,13 @@ message SuggestSpellingsResponse {
   // formed into phrases.
   repeated PhraseSuggestion phrase_suggestions = 2;
 }
+
+ // Allows a score to be weighted according to label.
+ message LabelScorer {
+  // Mapping of label to weight.
+  map<string, double> weights = 1;
+}
+
 
 // Determines whether the request should be porcessed.
 message SkipOption {
