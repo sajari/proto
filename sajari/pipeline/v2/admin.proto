@@ -25,6 +25,12 @@ service PipelineAdmin {
   // Get the default version of the pipeline.
   rpc GetDefaultPipeline(GetDefaultPipelineRequest) returns (GetDefaultPipelineResponse);
 
+  // Set the default pipeline for a collection.
+  rpc SetCollectionDefaultPipeline(SetCollectionDefaultPipelineRequest) returns (SetCollectionDefaultPipelineResponse);
+
+  // Get the default pipeline for a collection.
+  rpc GetCollectionDefaultPipeline(GetCollectionDefaultPipelineRequest) returns (GetCollectionDefaultPipelineResponse);
+
   // Delete a pipeline.
   //
   // Note: it is not possible to delete a pipeline if it is the default
@@ -56,6 +62,26 @@ message GetDefaultPipelineRequest {
 
 message GetDefaultPipelineResponse {
   // Identifier for pipeline.
+  TypeIdentifier pipeline = 1;
+
+  // Time when this default version was set.
+  google.protobuf.Timestamp create_time = 2;
+}
+
+message SetCollectionDefaultPipelineRequest {
+  // Identifier for pipeline.  Assumes that the
+  // version is empty, will be ignored if set.
+  TypeIdentifier pipeline = 1;
+}
+
+message SetCollectionDefaultPipelineResponse {}
+
+message GetCollectionDefaultPipelineRequest {
+  // This refers to the collection implicitly associated with the request.
+}
+
+message GetCollectionDefaultPipelineResponse {
+  // Identifier for pipeline.  Version will not be populated.
   TypeIdentifier pipeline = 1;
 
   // Time when this default version was set.
