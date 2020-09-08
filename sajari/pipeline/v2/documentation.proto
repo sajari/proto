@@ -3,6 +3,7 @@ syntax = "proto3";
 package sajari.pipeline.v2;
 
 import "sajari/pipeline/v2/pipeline.proto";
+import "sajari/pipeline/v2/admin.proto";
 
 import "google/protobuf/timestamp.proto";
 
@@ -109,6 +110,9 @@ message Step {
 
   // Description of the step in this pipeline.
   string description = 5;
+
+  // Long description of the step.
+  string long_description = 12;
 
   // List of input parameters used by the step.
   repeated Parameter inputs = 6;
