@@ -1,0 +1,21 @@
+name: Push to default branch
+
+on:
+  push:
+    branches:
+      - v2
+
+concurrency:
+  group: '${{ github.repository }}/master'
+
+jobs:
+  buf-push:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    steps:
+    - uses: actions/checkout@v2
+    - uses: bufbuild/buf-setup-action@v0.4.0
+    - uses: bufbuild/buf-push-action@v0.3.0
+      with:
+        buf_token: ${{ secrets.BUF_TOKEN }}
